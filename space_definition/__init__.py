@@ -2,3 +2,4 @@ from .mesh_creator import MeshCreator
 from .unit_square_mesh_creator import UnitSquareMeshCreator
 from .vector_function_space_creator import VectorFunctionSpaceCreator
 from .function_space_creator import FunctionSpaceCreator
+from .square_boundary_definer import SquareBoundaryDefiner, SquareSide
