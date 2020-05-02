@@ -1,6 +1,6 @@
 from enum import Enum
 
-class MarkerIndex(Enum):
+class MarkerNames(Enum):
     def __repr__(self):
         return '{}'.format(self.name)
 
