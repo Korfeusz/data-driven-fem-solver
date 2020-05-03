@@ -6,7 +6,6 @@ import numpy as np
 
 mesh_creator = UnitSquareMeshCreator(horizontal_cell_no=94, vertical_cell_no=94)
 vector_space_creator = VectorFunctionSpaceCreator(element_family='CG', degree=1)
-tensor_space_creator =  TensorFunctionSpaceCreator(element_family='DG', degree=0)
 tolerance = 1e-14
 
 boundary_markers = BoundaryMarkers(tolerance=tolerance, boundary_definition_constructor=SquareBoundaryDefinition,
@@ -18,15 +17,9 @@ bc_creator = DirichletBCCreator(boundary_names_for_condition=SquareSideMarkerNam
 
 mesh = mesh_creator.get_mesh()
 vector_space = vector_space_creator.get_function_space(mesh=mesh)
-tensor_space = tensor_space_creator.get_function_space(mesh=mesh)
 boundary_markers.mark_boundaries(mesh=mesh)
 bc = bc_creator.apply(vector_space=vector_space, boundary_markers=boundary_markers.value)
 ds = fenics.Measure('ds', domain=mesh, subdomain_data=boundary_markers.value)
-
-
-# Form compiler options
-fenics.parameters["form_compiler"]["cpp_optimize"] = True
-fenics.parameters["form_compiler"]["optimize"] = True
 
 # Elastic parameters
 E  = 1000.0
@@ -36,11 +29,6 @@ lmbda = fenics.Constant(E*nu / ((1.0 + nu)*(1.0 - 2.0*nu)))
 
 # Mass density
 rho = fenics.Constant(1.0)
-
-# Rayleigh damping coefficients
-eta_m = fenics.Constant(0.)
-eta_k = fenics.Constant(0.)
-
 
 # Generalized-alpha method parameters
 alpha_m = fenics.Constant(0.2)
@@ -53,6 +41,9 @@ beta    = fenics.Constant((gamma+0.5)**2/4.)
 T       = 4.0
 Nsteps  = 50
 dt = fenics.Constant(T/Nsteps)
+# Time-stepping
+time = np.linspace(0, T, Nsteps+1)
+
 
 p0 = 1.
 cutoff_Tc = T/5
@@ -82,14 +73,10 @@ def m(u, u_):
 def k(u, u_):
     return fenics.inner(sigma(u), fenics.sym(fenics.grad(u_)))*fenics.dx
 
-# Rayleigh damping form
-def c(u, u_):
-    return eta_m*m(u, u_) + eta_k*k(u, u_)
 
 # Work of external forces
 def Wext(u_):
-    x = fenics.dot(u_, p)
-    return x*ds(SquareSideMarkerNames.X1.value)
+    return fenics.dot(u_, p)*ds(SquareSideMarkerNames.X1.value)
 
 # Update formula for acceleration
 # a = 1/(2*beta)*((u - u0 - v0*dt)/(0.5*dt*dt) - (1-2*beta)*a0)
@@ -134,8 +121,7 @@ def avg(x_old, x_new, alpha):
 # Residual
 a_new = update_a(du, u_old, v_old, a_old, ufl=True)
 v_new = update_v(a_new, u_old, v_old, a_old, ufl=True)
-res = m(avg(a_old, a_new, alpha_m), u_) + c(avg(v_old, v_new, alpha_f), u_) \
-       + k(avg(u_old, du, alpha_f), u_) - Wext(u_)
+res = m(avg(a_old, a_new, alpha_m), u_) + k(avg(u_old, du, alpha_f), u_) - Wext(u_)
 a_form = fenics.lhs(res)
 L_form = fenics.rhs(res)
 
@@ -144,13 +130,8 @@ K, res = fenics.assemble_system(a_form, L_form, bc)
 solver = fenics.LUSolver(K, "mumps")
 solver.parameters["symmetric"] = True
 
-# Time-stepping
-time = np.linspace(0, T, Nsteps+1)
-u_tip = np.zeros((Nsteps+1,))
-energies = np.zeros((Nsteps+1, 4))
-E_damp = 0
-E_ext = 0
-sig = fenics.Function(tensor_space, name="sigma")
+
+
 xdmf_file = fenics.XDMFFile("elastodynamics-results.xdmf")
 xdmf_file.parameters["flush_output"] = True
 xdmf_file.parameters["functions_share_mesh"] = True
