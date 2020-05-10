@@ -4,8 +4,9 @@ from space_definition import UnitSquareMeshCreator, MeshCreator, FunctionSpaceCr
 import fenics
 import numpy as np
 
-mesh_creator = UnitSquareMeshCreator(horizontal_cell_no=94, vertical_cell_no=94)
+mesh_creator = UnitSquareMeshCreator(horizontal_cell_no=5, vertical_cell_no=5)
 vector_space_creator = VectorFunctionSpaceCreator(element_family='CG', degree=1)
+tensor_space_creator = TensorFunctionSpaceCreator(element_family='DG', degree=0)
 tolerance = 1e-14
 
 boundary_markers = BoundaryMarkers(tolerance=tolerance, boundary_definition_constructor=SquareBoundaryDefinition,
@@ -17,6 +18,7 @@ bc_creator = DirichletBCCreator(boundary_names_for_condition=SquareSideMarkerNam
 
 mesh = mesh_creator.get_mesh()
 vector_space = vector_space_creator.get_function_space(mesh=mesh)
+tensor_space = tensor_space_creator.get_function_space(mesh=mesh)
 boundary_markers.mark_boundaries(mesh=mesh)
 bc = bc_creator.apply(vector_space=vector_space, boundary_markers=boundary_markers.value)
 ds = fenics.Measure('ds', domain=mesh, subdomain_data=boundary_markers.value)
@@ -65,13 +67,44 @@ a_old = fenics.Function(vector_space)
 def sigma(r):
     return 2.0*mu*fenics.sym(fenics.grad(r)) + lmbda*fenics.tr(fenics.sym(fenics.grad(r)))*fenics.Identity(len(r))
 
+def np_sym(r):
+    return 0.5 * (r + np.transpose(r))
+
+def sigma_np(r, mu, lmbda):
+    return 2.0 * mu * np_sym(np.gradient(r)) + lmbda * np.trace(np_sym(np.gradient(r))) * np.identity(len(r))
+
+
+s = fenics.Function(tensor_space)
+vv = fenics.FunctionSpace(mesh, 'CG', 1)
+class Sigma(fenics.UserExpression):
+    def set_u(self, r):
+        self.r = r
+
+
+    def eval(self, value, x):
+        print('x ', x)
+        print('val ', value)
+        # print('s ', fenics.project(self.r, V=vector_space))
+        # print('r', self.r[x[0]][x[1]])
+        # print('type: ', type(sigma(self.r)))
+        value[0], value[1], value[2], value[3] = 0.1, 0.1, 0.1, 0.1
+
+    def value_shape(self):
+        return (2, 2)
+
+sig = Sigma()
 # Mass form
 def m(u, u_):
     return rho*fenics.inner(u, u_)*fenics.dx
 
 # Elastic stiffness form
+# def k(u, u_):
+#     return fenics.inner(sigma(u), fenics.sym(fenics.grad(u_)))*fenics.dx
+
 def k(u, u_):
-    return fenics.inner(sigma(u), fenics.sym(fenics.grad(u_)))*fenics.dx
+    print(type(u))
+    sig.set_u(u)
+    return fenics.inner(sig, fenics.sym(fenics.grad(u_)))*fenics.dx
 
 
 # Work of external forces
@@ -118,17 +151,12 @@ def update_fields(u, u_old, v_old, a_old):
 def avg(x_old, x_new, alpha):
     return alpha*x_old + (1-alpha)*x_new
 
-# Residual
-a_new = update_a(du, u_old, v_old, a_old, ufl=True)
-v_new = update_v(a_new, u_old, v_old, a_old, ufl=True)
-res = m(avg(a_old, a_new, alpha_m), u_) + k(avg(u_old, du, alpha_f), u_) - Wext(u_)
-a_form = fenics.lhs(res)
-L_form = fenics.rhs(res)
 
-# Define solver for reusing factorization
-K, res = fenics.assemble_system(a_form, L_form, bc)
-solver = fenics.LUSolver(K, "mumps")
-solver.parameters["symmetric"] = True
+#
+# # Define solver for reusing factorization
+# K, res = fenics.assemble_system(a_form, L_form, bc)
+# solver = fenics.LUSolver(K, "mumps")
+# solver.parameters["symmetric"] = True
 
 
 
@@ -146,8 +174,19 @@ for (i, dt) in enumerate(np.diff(time)):
     # Forces are evaluated at t_{n+1-alpha_f}=t_{n+1}-alpha_f*dt
     p.t = t-float(alpha_f*dt)
 
+    # Residual
+    a_new = update_a(du, u_old, v_old, a_old, ufl=False)
+    v_new = update_v(a_new, u_old, v_old, a_old, ufl=False)
+    res = m(avg(a_old, a_new, alpha_m), u_) + k(avg(u_old, du, alpha_f), u_) - Wext(u_)
+    a_form = fenics.lhs(res)
+    L_form = fenics.rhs(res)
+    # Define solver for reusing factorization
+    K, res = fenics.assemble_system(a_form, L_form, bc)
+    solver = fenics.LUSolver(K, "mumps")
+    solver.parameters["symmetric"] = True
+
     # Solve for new displacement
-    res = fenics.assemble(L_form)
+    # res = fenics.assemble(L_form)
     bc[0].apply(res)
     solver.solve(K, u.vector(), res)
 
