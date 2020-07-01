@@ -38,11 +38,14 @@ venv.bak/
 # Pycharm
 .idea/
 
-test.py
-test_1.py
 replace_uint.py
 test/
 test_corrected/
 demo_elastodynamics.py
 *.h5
 *.xdmf
+*.npy
+*.avi
+test*.py
+displacement_comparator.py
+jit*/
