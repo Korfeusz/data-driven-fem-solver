@@ -1,17 +1,17 @@
 import fenics
 from constitutive_relations import ConstitutiveRelation
-
+from generalized_alpha_parameters import GeneralizedAlphaParameters
 
 class ProblemForm:
-    def __init__(self, rho, eta_m, eta_k, constitutive_relation: ConstitutiveRelation, gamma, beta, alpha_f, alpha_m, delta_t, f_ext):
+    def __init__(self, rho, eta_m, eta_k, constitutive_relation: ConstitutiveRelation, generalized_alpha_parameters: GeneralizedAlphaParameters, delta_t, f_ext):
         self.rho = rho
         self.eta_m = eta_m
         self.eta_k = eta_k
         self.constitutive_relation = constitutive_relation
-        self.gamma = gamma
-        self.beta = beta
-        self.alpha_f = alpha_f
-        self.alpha_m = alpha_m
+        self.gamma = generalized_alpha_parameters.gamma
+        self.beta = generalized_alpha_parameters.beta
+        self.alpha_f = generalized_alpha_parameters.alpha_f
+        self.alpha_m = generalized_alpha_parameters.alpha_m
         self.delta_t = delta_t
         self.f_ext = f_ext
 
