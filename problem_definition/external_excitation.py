@@ -8,3 +8,7 @@ class ExternalExcitation(abc.ABC):
     @abc.abstractmethod
     def update(self, *args, **kwargs):
         pass
+
+    @abc.abstractmethod
+    def set_ds(self, ds):
+        pass
