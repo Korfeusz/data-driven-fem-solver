@@ -2,20 +2,22 @@ import fenics
 from problem_definition import  TimeStepBuilder
 from fem_solver import get_fem_solver
 from .simulation_parameters import SimulationParameters
+from .common_simulation_parameters import CommonSimulationParameters
 
 class Simulation:
-    def __init__(self, simulation_parameters: SimulationParameters):
-        self.mesh_creator = simulation_parameters.mesh_creator
+    def __init__(self, simulation_parameters: SimulationParameters,
+                 common_simulation_parameters: CommonSimulationParameters):
+        self.mesh_creator = common_simulation_parameters.mesh_creator
         self.spaces = simulation_parameters.spaces
-        self.boundary_markers = simulation_parameters.boundary_markers
-        self.bc_creator = simulation_parameters.bc_creator
-        self.boundary_excitation = simulation_parameters.boundary_excitation
+        self.boundary_markers = common_simulation_parameters.boundary_markers
+        self.bc_creator = common_simulation_parameters.bc_creator
+        self.boundary_excitation = common_simulation_parameters.boundary_excitation
         self.fields = simulation_parameters.fields
-        self.field_updates = simulation_parameters.field_updates
+        self.field_updates = common_simulation_parameters.field_updates
         self.fem_solver_type = simulation_parameters.fem_solver_type
-        self.problem = simulation_parameters.problem
-        self.alpha_params = simulation_parameters.alpha_params
-        self.time_params = simulation_parameters.time_params
+        self.problem = common_simulation_parameters.problem(simulation_parameters.constitutive_relation)
+        self.alpha_params = common_simulation_parameters.alpha_params
+        self.time_params = common_simulation_parameters.time_params
         self.time_step_builder = TimeStepBuilder(time_step_type=simulation_parameters.time_step_type)
         self.xdmf_file = fenics.XDMFFile(simulation_parameters.save_file_name)
         self.xdmf_file.parameters["flush_output"] = True
