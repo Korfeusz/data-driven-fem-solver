@@ -3,8 +3,8 @@ from constitutive_relations import ConstitutiveRelation
 from generalized_alpha_parameters import GeneralizedAlphaParameters
 
 class ProblemForm:
-    def __init__(self, rho, eta_m, eta_k, constitutive_relation: ConstitutiveRelation, generalized_alpha_parameters: GeneralizedAlphaParameters, delta_t, f_ext):
-        self.rho = rho
+    def __init__(self, mass_density: float, eta_m, eta_k, constitutive_relation: ConstitutiveRelation, generalized_alpha_parameters: GeneralizedAlphaParameters, delta_t, f_ext):
+        self.rho = fenics.Constant(mass_density)
         self.eta_m = eta_m
         self.eta_k = eta_k
         self.constitutive_relation = constitutive_relation
