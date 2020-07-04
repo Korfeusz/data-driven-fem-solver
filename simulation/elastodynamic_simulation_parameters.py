@@ -9,9 +9,6 @@ from .simulation_parameters import SimulationParameters
 
 class ElastodynamicSimulationParameters(SimulationParameters):
     def __init__(self):
-        self._boundary_excitation = None
-        self._alpha_params = None
-        self._time_params = None
         self._constitutive_relation = None
 
 

@@ -13,7 +13,6 @@ class CommonSimulationParameters:
         self._boundary_excitation = None
         self._alpha_params = None
         self._time_params = None
-        self._constitutive_relation = None
 
 
     @property
