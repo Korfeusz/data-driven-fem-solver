@@ -19,6 +19,7 @@ class ElastodynamicSimulationParameters(SimulationParameters):
         self._boundary_excitation = None
         self._alpha_params = None
         self._time_params = None
+        self._constitutive_relation = None
 
 
     @property
@@ -66,11 +67,16 @@ class ElastodynamicSimulationParameters(SimulationParameters):
         return PreAssembledSolver
 
     @property
+    def constitutive_relation(self):
+        if self._constitutive_relation is None:
+            self._constitutive_relation = LinearHookesLaw(young_modulus=1000.0, poisson_coefficient=0.3)
+        return self._constitutive_relation
+
+    @property
     def problem(self) -> ProblemForm:
-        constitutive_relation = LinearHookesLaw(young_modulus=1000.0, poisson_coefficient=0.3)
         return ElastodynamicsForm(mass_density=1.0,
                                   eta_m=fenics.Constant(0.0), eta_k=fenics.Constant(0.0),
-                                  constitutive_relation=constitutive_relation,
+                                  constitutive_relation=self.constitutive_relation,
                                   generalized_alpha_parameters=self.alpha_params,
                                   delta_t=self.time_params.delta_t,
                                   f_ext=self.boundary_excitation.value)
