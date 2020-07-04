@@ -1,4 +1,6 @@
+import abc
 
-
-class FieldUpdates:
-    pass
+class FieldUpdates(abc.ABC):
+    @abc.abstractmethod
+    def update_fields(self):
+        pass
