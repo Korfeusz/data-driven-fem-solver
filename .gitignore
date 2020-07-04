@@ -41,7 +41,6 @@ venv.bak/
 replace_uint.py
 test/
 test_corrected/
-demo_elastodynamics.py
 *.h5
 *.xdmf
 *.npy

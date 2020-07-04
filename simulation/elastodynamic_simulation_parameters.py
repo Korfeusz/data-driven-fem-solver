@@ -19,7 +19,6 @@ class ElastodynamicSimulationParameters(SimulationParameters):
         return Spaces(vector_space_creator=vector_space_creator, tensor_space_creator=tensor_space_creator)
 
 
-
     @property
     def fields(self) -> Fields:
         return ElastodynamicsFields()

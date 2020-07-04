@@ -1,5 +1,4 @@
 import fenics
-
 from generalized_alpha_parameters import GeneralizedAlphaParameters
 from problem_definition import ExternalExcitation, FieldUpdates, ProblemForm, Traction, ElastodynamicsFieldUpdates, \
     ElastodynamicsForm
