@@ -16,7 +16,7 @@ class ElastodynamicsFieldUpdates(FieldUpdates):
     def update_v(self, a, v_old, a_old):
         return v_old + self.dt * ((1 - self.gamma) * a_old + self.gamma * a)
 
-    def update_fields(self, u, u_old, v_old, a_old):
+    def run(self, u, u_old, v_old, a_old):
         u_vec, u0_vec = u.vector(), u_old.vector()
         v0_vec, a0_vec = v_old.vector(), a_old.vector()
 

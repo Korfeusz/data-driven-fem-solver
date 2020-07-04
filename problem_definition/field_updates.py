@@ -4,5 +4,5 @@ import abc
 
 class FieldUpdates(abc.ABC):
     @abc.abstractmethod
-    def update_fields(self, *args, **kwargs):
+    def run(self, *args, **kwargs):
         pass
