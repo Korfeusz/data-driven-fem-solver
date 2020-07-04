@@ -6,3 +6,4 @@ from .square_boundary_definition import SquareBoundaryDefinition, SquareSideMark
 from .boundary_markers import BoundaryMarkers
 from .dirichlet_bc_creator import DirichletBCCreator
 from .tensor_function_space_creator import TensorFunctionSpaceCreator
+from .spaces import Spaces

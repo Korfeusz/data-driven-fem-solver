@@ -1,5 +1,6 @@
 import fenics
 from .fields import Fields
+from space_definition import Spaces
 
 class ElastodynamicsFields(Fields):
     def __init__(self):
@@ -10,7 +11,8 @@ class ElastodynamicsFields(Fields):
         self.a_old = None
         self.u_new = None
 
-    def generate(self, vector_space):
+    def generate(self, spaces: Spaces):
+        vector_space = spaces.vector_space
         self.w = fenics.TestFunction(vector_space)
         self.u = fenics.TrialFunction(vector_space)
         self.u_old = fenics.Function(vector_space, name='u_old')

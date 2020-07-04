@@ -6,6 +6,6 @@ from .external_excitation import ExternalExcitation
 from .traction import Traction
 from .elastodynamics_fields import ElastodynamicsFields
 from .fields import Fields
-from .time_step import TimeStep, get_time_step
+from .time_step import TimeStep
 from .elastodynamics_time_step import ElastodynamicsTimeStep
 from .time_step_builder import TimeStepBuilder
