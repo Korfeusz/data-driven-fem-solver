@@ -4,7 +4,8 @@ from generalized_alpha_parameters import GeneralizedAlphaParameters
 from .problem_form import ProblemForm
 
 class ElastodynamicsForm(ProblemForm):
-    def __init__(self, mass_density: float, eta_m, eta_k, constitutive_relation: ConstitutiveRelation, generalized_alpha_parameters: GeneralizedAlphaParameters, delta_t, f_ext):
+    def __init__(self, mass_density: float, eta_m, eta_k, constitutive_relation: ConstitutiveRelation,
+                 generalized_alpha_parameters: GeneralizedAlphaParameters, delta_t, f_ext):
         self.rho = fenics.Constant(mass_density)
         self.eta_m = eta_m
         self.eta_k = eta_k
@@ -50,11 +51,18 @@ class ElastodynamicsForm(ProblemForm):
     def k(self, u, w, constitutive_relation_function):
         return fenics.inner(constitutive_relation_function(u), fenics.sym(fenics.grad(w))) * fenics.dx
 
-    def get_weak_form_lhs(self, u, w):
+
+    def get_weak_form_lhs(self, fields):
+        u = fields.u
+        w = fields.w
         return (1 - self.alpha_f) * self.k(u, w, self.constitutive_relation.get_new_value) \
                + self.c_1 * self.c(u, w, self.constitutive_relation.get_new_value) + self.m_1 * self.m(u, w)
 
-    def get_weak_form_rhs(self, u, v, a, w):
+    def get_weak_form_rhs(self, fields):
+        u = fields.u_old
+        v = fields.v_old
+        a = fields.a_old
+        w = fields.w
         old_relation = self.constitutive_relation.get_old_value
         return -self.alpha_f * self.k(u, w, old_relation) + self.f_ext(w) \
                + self.c_1 * self.c(u, w, old_relation) - self.c_2 * self.c(v, w, old_relation)\
