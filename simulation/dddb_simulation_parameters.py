@@ -14,6 +14,7 @@ from .simulation_parameters import SimulationParameters
 class DDDbParameters(SimulationParameters):
     def __init__(self):
         self._constitutive_relation = None
+        self._fields = None
 
 
     @property
@@ -25,7 +26,9 @@ class DDDbParameters(SimulationParameters):
 
     @property
     def fields(self) -> Fields:
-        return DDDbFields()
+        if self._fields is None:
+            self._fields = DDDbFields()
+        return self._fields
 
 
     @property
@@ -35,7 +38,7 @@ class DDDbParameters(SimulationParameters):
     @property
     def constitutive_relation(self) -> ConstitutiveRelation:
         if self._constitutive_relation is None:
-            self._constitutive_relation = DDDbConstitutiveRelation()
+            self._constitutive_relation = DDDbConstitutiveRelation(fields=self.fields)
         return self._constitutive_relation
 
 
