@@ -13,9 +13,9 @@ class Fields(abc.ABC):
         self._u_new = None
         self.vector_space = None
 
-
+    @abc.abstractmethod
     def initialize(self, spaces: Spaces) -> None:
-        self.vector_space = spaces.vector_space
+        pass
 
     @property
     def w(self) -> fenics.Function:
