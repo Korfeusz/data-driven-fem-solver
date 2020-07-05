@@ -1,6 +1,6 @@
 from typing import Type
 
-from constitutive_relations import LinearHookesLaw
+from constitutive_relations import LinearHookesLaw, ConstitutiveRelation
 from fem_solver import FemSolver, PreAssembledSolver
 from problem_definition import Fields, ElastodynamicsFields
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
@@ -30,7 +30,7 @@ class ElastodynamicSimulationParameters(SimulationParameters):
         return PreAssembledSolver
 
     @property
-    def constitutive_relation(self):
+    def constitutive_relation(self) -> ConstitutiveRelation:
         if self._constitutive_relation is None:
             self._constitutive_relation = LinearHookesLaw(young_modulus=1000.0, poisson_coefficient=0.3)
         return self._constitutive_relation

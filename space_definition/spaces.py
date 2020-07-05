@@ -1,3 +1,5 @@
+import fenics
+
 from .vector_function_space_creator import VectorFunctionSpaceCreator
 from .tensor_function_space_creator import TensorFunctionSpaceCreator
 
@@ -9,6 +11,6 @@ class Spaces:
         self.vector_space = None
         self.tensor_space = None
 
-    def generate(self, mesh):
+    def generate(self, mesh: fenics.Mesh) -> None:
         self.vector_space = self.vector_space_creator.get_function_space(mesh=mesh)
         self.tensor_space = self.tensor_space_creator.get_function_space(mesh=mesh)

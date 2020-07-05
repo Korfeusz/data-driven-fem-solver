@@ -12,7 +12,7 @@ class ElastodynamicsForm(ProblemForm):
                  constitutive_relation: ConstitutiveRelation,
                  generalized_alpha_parameters: GeneralizedAlphaParameters,
                  delta_t: fenics.Constant,
-                 f_ext: fenics.Expression):
+                 f_ext: Callable[[fenics.Function], fenics.Expression]):
         self.rho = fenics.Constant(mass_density)
         self.eta_m = eta_m
         self.eta_k = eta_k

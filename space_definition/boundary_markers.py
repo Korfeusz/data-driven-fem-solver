@@ -5,7 +5,7 @@ from typing import Type
 IDLE_MARKER = 9999
 
 class BoundaryMarkers:
-    def __init__(self, tolerance, boundary_definition_constructor: Type[fenics.SubDomain], boundary_definition_settings: dict,
+    def __init__(self, tolerance: float, boundary_definition_constructor: Type[fenics.SubDomain], boundary_definition_settings: dict,
                  boundary_names: Type[MarkerNames]):
         self.value = None
         self.tolerance = tolerance

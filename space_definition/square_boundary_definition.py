@@ -21,7 +21,3 @@ class SquareBoundaryDefinition(fenics.SubDomain):
 
     def inside(self, x, on_boundary):
         return on_boundary and fenics.near(x[self.x_or_y], self.start_or_end, self.tolerance)
-
-
-def get_all_square_boundaries_and_marker_values():
-    return {x.name: {'boundary': SquareBoundaryDefinition(tolerance=1e-14, side=x.value), 'marker_value': i} for i, x in enumerate(SquareSide)}

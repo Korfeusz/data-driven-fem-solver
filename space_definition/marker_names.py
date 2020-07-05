@@ -1,10 +1,10 @@
 from enum import Enum
 
 class MarkerNames(Enum):
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '{}'.format(self.name)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{}'.format(self.name)
 
     def __new__(cls):
