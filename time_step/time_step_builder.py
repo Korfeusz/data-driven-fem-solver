@@ -1,4 +1,5 @@
 from .time_step import TimeStep
+from .dddb_time_step import DDDbTimeStep
 from .elastodynamics_time_step import ElastodynamicsTimeStep
 from typing import Type
 
@@ -33,4 +34,7 @@ class TimeStepBuilder:
     def build(self):
         if self.time_step_type == ElastodynamicsTimeStep:
             return ElastodynamicsTimeStep(self.alpha_params, self.time_params, self.fem_solver,
+                                          self.file, self.boundary_excitation, self.field_updates, self.fields)
+        if self.time_step_type == DDDbTimeStep:
+            return DDDbTimeStep(self.alpha_params, self.time_params, self.fem_solver,
                                           self.file, self.boundary_excitation, self.field_updates, self.fields)
