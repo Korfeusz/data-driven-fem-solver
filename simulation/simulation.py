@@ -1,5 +1,5 @@
 import fenics
-from problem_definition import  TimeStepBuilder
+from time_step import  TimeStepBuilder
 from fem_solver import get_fem_solver
 from .simulation_parameters import SimulationParameters
 from .common_simulation_parameters import CommonSimulationParameters
@@ -24,14 +24,14 @@ class Simulation:
         self.xdmf_file.parameters["functions_share_mesh"] = True
         self.xdmf_file.parameters["rewrite_function_mesh"] = False
 
-    def run(self):
+    def run(self) -> None:
         mesh = self.mesh_creator.get_mesh()
         self.spaces.generate(mesh=mesh)
         self.boundary_markers.mark_boundaries(mesh=mesh)
         bc = self.bc_creator.apply(vector_space=self.spaces.vector_space, boundary_markers=self.boundary_markers.value)
         ds = fenics.Measure('ds', domain=mesh, subdomain_data=self.boundary_markers.value)
         self.boundary_excitation.set_ds(ds=ds)
-        self.fields.generate(spaces=self.spaces)
+        self.fields.initialize(spaces=self.spaces)
         fem_solver = get_fem_solver(fem_solver=self.fem_solver_type, problem=self.problem, fields=self.fields,
                                     boundary_conditions=bc)
         self.time_step_builder.set(alpha_params=self.alpha_params, time_params=self.time_params, fem_solver=fem_solver,

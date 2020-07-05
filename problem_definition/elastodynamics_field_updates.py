@@ -1,7 +1,8 @@
 from .field_updates import FieldUpdates
 from generalized_alpha_parameters import GeneralizedAlphaParameters
 from time_stepping_parameters import TimeSteppingParameters
-
+from .fields import Fields
+import fenics
 
 class ElastodynamicsFieldUpdates(FieldUpdates):
     def __init__(self, generalized_alpha_parameters: GeneralizedAlphaParameters,
@@ -10,13 +11,14 @@ class ElastodynamicsFieldUpdates(FieldUpdates):
         self.beta = float(generalized_alpha_parameters.beta)
         self.dt = time_stepping_parameters.delta_t_float
 
-    def update_a(self, u, u_old, v_old, a_old):
+    def update_a(self, u: fenics.PETScVector, u_old: fenics.PETScVector,
+                 v_old: fenics.PETScVector, a_old: fenics.PETScVector) -> fenics.PETScVector:
         return (u - u_old - self.dt * v_old) / self.beta / self.dt ** 2 - (1 - 2 * self.beta) / 2 / self.beta * a_old
 
-    def update_v(self, a, v_old, a_old):
+    def update_v(self, a: fenics.PETScVector, v_old: fenics.PETScVector, a_old: fenics.PETScVector) -> fenics.PETScVector:
         return v_old + self.dt * ((1 - self.gamma) * a_old + self.gamma * a)
 
-    def run(self, fields):
+    def run(self, fields: Fields) -> None:
         u = fields.u_new
         u_old = fields.u_old
         v_old = fields.v_old

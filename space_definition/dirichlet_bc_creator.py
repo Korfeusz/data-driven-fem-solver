@@ -10,7 +10,7 @@ class DirichletBCCreator:
             self.boundary_names = boundary_names_for_condition
         self.value = value
 
-    def apply(self, vector_space: fenics.VectorFunctionSpace, boundary_markers: fenics.MeshFunction):
+    def apply(self, vector_space: fenics.VectorFunctionSpace, boundary_markers: fenics.MeshFunction) -> List[fenics.DirichletBC]:
         bcs = []
         for name in self.boundary_names:
             bcs.append(fenics.DirichletBC(vector_space, self.value, boundary_markers, name.value))

@@ -1,9 +1,10 @@
 from .fem_solver import FemSolver
 import fenics
-
+from problem_definition import Fields, ProblemForm
+from typing import List
 
 class PreAssembledSolver(FemSolver):
-    def __init__(self, problem, fields, boundary_conditions):
+    def __init__(self, problem: ProblemForm, fields: Fields, boundary_conditions: List[fenics.DirichletBC]):
         super().__init__(problem, fields, boundary_conditions)
         self.a_form = problem.get_weak_form_lhs(fields=fields)
         self.L_form = problem.get_weak_form_rhs(fields=fields)
@@ -13,7 +14,7 @@ class PreAssembledSolver(FemSolver):
         self.solver.parameters["symmetric"] = True
 
 
-    def run(self, fields):
+    def run(self, fields: Fields):
         res = fenics.assemble(self.L_form)
         self.boundary_conditions[0].apply(res)
         self.solver.solve(self.K, fields.u_new.vector(), res)

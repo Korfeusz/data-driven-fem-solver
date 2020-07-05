@@ -1,15 +1,17 @@
 import abc
-from typing import Type
+from typing import Type, List
+from problem_definition import Fields, ProblemForm
+import fenics
 
 class FemSolver(abc.ABC):
     @abc.abstractmethod
-    def __init__(self, problem, fields, boundary_conditions):
+    def __init__(self, problem: ProblemForm, fields: Fields, boundary_conditions: List[fenics.DirichletBC]):
         pass
 
     @abc.abstractmethod
-    def run(self, fields):
+    def run(self, fields: Fields):
         pass
 
 
-def get_fem_solver(fem_solver: Type[FemSolver], problem, fields, boundary_conditions):
+def get_fem_solver(fem_solver: Type[FemSolver], problem: ProblemForm, fields: Fields, boundary_conditions: List[fenics.DirichletBC]):
     return fem_solver(problem, fields, boundary_conditions)

@@ -1,5 +1,5 @@
 from .time_step import TimeStep
-from . import ElastodynamicsTimeStep
+from .elastodynamics_time_step import ElastodynamicsTimeStep
 from typing import Type
 
 class TimeStepBuilder:

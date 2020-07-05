@@ -2,8 +2,9 @@ from typing import Type
 
 from constitutive_relations import LinearHookesLaw
 from fem_solver import FemSolver, PreAssembledSolver
-from problem_definition import TimeStep, Fields, ElastodynamicsFields, ElastodynamicsTimeStep
+from problem_definition import Fields, ElastodynamicsFields
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
+from time_step import TimeStep, ElastodynamicsTimeStep
 from .simulation_parameters import SimulationParameters
 
 
