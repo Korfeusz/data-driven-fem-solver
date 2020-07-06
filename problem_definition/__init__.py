@@ -6,3 +6,4 @@ from .external_excitation import ExternalExcitation
 from .traction import Traction
 from .elastodynamics_fields import ElastodynamicsFields
 from .fields import Fields
+from .dddb_fields import DDDbFields

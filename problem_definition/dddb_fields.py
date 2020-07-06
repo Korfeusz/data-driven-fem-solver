@@ -1,13 +1,13 @@
 import fenics
-
+import numpy as np
 from space_definition import Spaces
 from .fields import Fields
 
 class DDDbFields(Fields):
     def __init__(self):
         super().__init__()
-        self._old_constitutive_relation_multiplicative_parameters = None
-        self._new_constitutive_relation_multiplicative_parameters = None
+        self._old_constitutive_relation_multiplicative_parameters: fenics.Function = None
+        self._new_constitutive_relation_multiplicative_parameters: fenics.Function = None
         self.tensor_space = None
 
     @property
@@ -29,6 +29,11 @@ class DDDbFields(Fields):
             except TypeError:
                 print('Tensor space was not initialized before access')
         return self._new_constitutive_relation_multiplicative_parameters
+
+    @new_constitutive_relation_multiplicative_parameters.setter
+    def new_constitutive_relation_multiplicative_parameters(self, array: np.ndarray):
+        self._new_constitutive_relation_multiplicative_parameters.vector()[:] = array
+
 
     def initialize(self, spaces: Spaces) -> None:
         self.vector_space = spaces.vector_space

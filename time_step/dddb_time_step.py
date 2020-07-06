@@ -1,4 +1,5 @@
 from file_handling import HDF5File
+from problem_definition import DDDbFields
 from space_definition import Spaces
 from .time_step import TimeStep
 from generalized_alpha_parameters import GeneralizedAlphaParameters
@@ -19,25 +20,30 @@ class DDDbTimeStep(TimeStep):
                  file: fenics.XDMFFile,
                  boundary_excitation: ExternalExcitation,
                  field_updates: FieldUpdates,
-                 fields: ElastodynamicsFields,
+                 fields: DDDbFields,
                  mesh: fenics.Mesh,
                  hdf_file_name: str,
                  spaces: Spaces,
                  strain_file_name: str,
-                 material_parameters_file_name: str):
+                 material_parameters_file_name: str,
+                 initial_material_parameters: np.ndarray):
         super().__init__(alpha_params, time_params, fem_solver, file, boundary_excitation, field_updates, fields)
         self.hdf5file = HDF5File(mesh=mesh, mode='r', file_name=hdf_file_name,
                                  function=fields.u_new, function_name=fields.u_new.name())
         self.tensor_space = spaces.tensor_space
         # self.t2d = fenics.vertex_to_dof_map(spaces.tensor_space)
         self.number_of_vertices = mesh.num_vertices()
+        self.strain_file_name = strain_file_name
+        self.material_parameters_file_name = material_parameters_file_name
+        self.fields = fields
+        self.fields.new_constitutive_relation_multiplicative_parameters = np.random.random(self.number_of_vertices * 4)
 
 
-    def transform_material_parameters(self, u_new: fenics.Function,
-                                      new_constitutive_relation_multiplicative_parameters: fenics.Function):
-        strain_vec = fenics.project(fenics.sym(fenics.grad(u_new)), V=self.tensor_space).vector()[:]
+
+    def transform_material_parameters(self):
+        strain_vec = fenics.project(fenics.sym(fenics.grad(self.fields.u_new)), V=self.tensor_space).vector()[:]
         strain_tens = np.reshape(strain_vec, newshape=(self.number_of_vertices, 2, 2))
-        parameters_vec = fenics.project(new_constitutive_relation_multiplicative_parameters,
+        parameters_vec = fenics.project(self.fields.new_constitutive_relation_multiplicative_parameters,
                                         V=self.tensor_space).vector()[:]
         parameters_tens = np.reshape(parameters_vec, newshape=(self.number_of_vertices, 2, 2))
         return strain_tens, parameters_tens

@@ -9,7 +9,7 @@ from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionS
 from time_step import TimeStep, TimeStepBuilder
 from time_step.dddb_time_step import DDDbTimeStep
 from .simulation_parameters import SimulationParameters
-
+import numpy as np
 
 class DDDbParameters(SimulationParameters):
     def __init__(self):

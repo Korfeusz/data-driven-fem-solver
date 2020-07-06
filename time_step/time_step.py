@@ -15,7 +15,7 @@ class TimeStep(abc.ABC):
                  file: fenics.XDMFFile,
                  boundary_excitation: ExternalExcitation,
                  field_updates: FieldUpdates,
-                 fields: Fields):
+                 fields):
         self.alpha_params = alpha_params
         self.time_params = time_params
         self.fem_solver = fem_solver
