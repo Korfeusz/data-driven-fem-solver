@@ -9,9 +9,12 @@ class HDF5File:
 
 
 
-    def save(self,  iteration: int):
+    def write(self, iteration: int):
         self.file.write(self.function, self.function_name, iteration)
 
 
     def load(self, iteration):
         self.file.read(self.function, '{}/vector_{}'.format(self.function_name, iteration))
+
+    def close(self):
+        self.file.close()

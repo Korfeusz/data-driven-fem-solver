@@ -1,5 +1,4 @@
 import fenics
-from time_step import  TimeStepBuilder
 from fem_solver import get_fem_solver
 from .simulation_parameters import SimulationParameters
 from .common_simulation_parameters import CommonSimulationParameters
@@ -42,3 +41,4 @@ class Simulation:
         for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
             print("Time: ", t)
             time_step.run(i)
+        time_step.close()

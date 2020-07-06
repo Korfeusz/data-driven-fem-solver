@@ -27,3 +27,7 @@ class TimeStep(abc.ABC):
     @abc.abstractmethod
     def run(self, i):
         pass
+
+    @abc.abstractmethod
+    def close(self):
+        pass

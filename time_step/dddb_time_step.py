@@ -24,3 +24,6 @@ class DDDbTimeStep(TimeStep):
 
     def run(self, i: int):
         pass
+
+    def close(self):
+        self.hdf5file.close()

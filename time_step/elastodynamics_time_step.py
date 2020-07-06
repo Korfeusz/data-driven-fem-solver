@@ -30,4 +30,7 @@ class ElastodynamicsTimeStep(TimeStep):
         self.fem_solver.run(self.fields)
         self.field_updates.run(fields=self.fields)
         self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)
-        self.hdf5file.save(i)
+        self.hdf5file.write(i)
+
+    def close(self):
+        self.hdf5file.close()
