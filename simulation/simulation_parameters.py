@@ -3,7 +3,7 @@ from typing import Type
 
 from fem_solver import FemSolver
 from problem_definition import Fields
-from time_step import TimeStep
+from time_step import TimeStep, TimeStepBuilder
 from space_definition import Spaces
 
 
@@ -27,7 +27,7 @@ class SimulationParameters(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def time_step_type(self) -> Type[TimeStep]:
+    def time_step_builder(self) -> TimeStepBuilder:
         pass
 
 

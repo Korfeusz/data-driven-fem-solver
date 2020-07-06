@@ -4,7 +4,7 @@ from constitutive_relations import LinearHookesLaw, ConstitutiveRelation
 from fem_solver import FemSolver, PreAssembledSolver
 from problem_definition import Fields, ElastodynamicsFields
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
-from time_step import TimeStep, ElastodynamicsTimeStep
+from time_step import TimeStep, ElastodynamicsTimeStep, TimeStepBuilder
 from .simulation_parameters import SimulationParameters
 
 
@@ -37,8 +37,10 @@ class ElastodynamicSimulationParameters(SimulationParameters):
 
 
     @property
-    def time_step_type(self) -> Type[TimeStep]:
-        return ElastodynamicsTimeStep
+    def time_step_builder(self) -> TimeStepBuilder:
+        tsb = TimeStepBuilder(time_step_type=ElastodynamicsTimeStep)
+        tsb.set(hdf5_file_name='saving_elastic.h5')
+        return tsb
 
 
     @property

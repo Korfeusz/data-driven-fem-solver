@@ -6,7 +6,7 @@ from fem_solver import FemSolver, PreAssembledSolver
 from problem_definition import Fields
 from problem_definition.dddb_fields import DDDbFields
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
-from time_step import TimeStep
+from time_step import TimeStep, TimeStepBuilder
 from time_step.dddb_time_step import DDDbTimeStep
 from .simulation_parameters import SimulationParameters
 
@@ -25,7 +25,7 @@ class DDDbParameters(SimulationParameters):
 
 
     @property
-    def fields(self) -> Fields:
+    def fields(self) -> DDDbFields:
         if self._fields is None:
             self._fields = DDDbFields()
         return self._fields
@@ -43,8 +43,10 @@ class DDDbParameters(SimulationParameters):
 
 
     @property
-    def time_step_type(self) -> Type[TimeStep]:
-        return DDDbTimeStep
+    def time_step_builder(self) -> TimeStepBuilder:
+        tsb = TimeStepBuilder(time_step_type=DDDbTimeStep)
+        tsb.set(hdf5_file_name='saving_elastic.h5')
+        return tsb
 
 
     @property

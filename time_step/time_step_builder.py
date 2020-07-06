@@ -13,9 +13,12 @@ class TimeStepBuilder:
         self.boundary_excitation = None
         self.field_updates = None
         self.fields = None
+        self.mesh = None
+        self.hdf5_file_name = None
 
     def set(self,  alpha_params=None, time_params=None, fem_solver=None,
-                          file=None, boundary_excitation=None, field_updates=None, fields=None):
+                          file=None, boundary_excitation=None, field_updates=None, fields=None,
+            mesh=None, hdf5_file_name=None):
         if alpha_params is not None:
             self.alpha_params = alpha_params
         if time_params is not None:
@@ -30,11 +33,18 @@ class TimeStepBuilder:
             self.field_updates = field_updates
         if fields is not None:
             self.fields = fields
+        if mesh is not None:
+            self.mesh = mesh
+        if hdf5_file_name is not None:
+            self.hdf5_file_name = hdf5_file_name
+
 
     def build(self):
         if self.time_step_type == ElastodynamicsTimeStep:
             return ElastodynamicsTimeStep(self.alpha_params, self.time_params, self.fem_solver,
-                                          self.file, self.boundary_excitation, self.field_updates, self.fields)
+                                          self.file, self.boundary_excitation, self.field_updates,
+                                          self.fields, self.mesh, self.hdf5_file_name)
         if self.time_step_type == DDDbTimeStep:
             return DDDbTimeStep(self.alpha_params, self.time_params, self.fem_solver,
-                                          self.file, self.boundary_excitation, self.field_updates, self.fields)
+                                self.file, self.boundary_excitation, self.field_updates, self.fields,
+                                self.mesh, self.hdf5_file_name)
