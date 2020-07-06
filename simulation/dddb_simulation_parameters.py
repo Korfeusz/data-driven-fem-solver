@@ -45,7 +45,9 @@ class DDDbParameters(SimulationParameters):
     @property
     def time_step_builder(self) -> TimeStepBuilder:
         tsb = TimeStepBuilder(time_step_type=DDDbTimeStep)
-        tsb.set(hdf5_file_name='saving_elastic.h5')
+        tsb.set(hdf5_file_name='saving_elastic.h5',
+                material_parameters_file_name='material_params.npy',
+                strain_file_name='strain.npy')
         return tsb
 
 

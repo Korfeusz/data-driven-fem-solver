@@ -35,7 +35,7 @@ class Simulation:
                                     boundary_conditions=bc)
         self.time_step_builder.set(alpha_params=self.alpha_params, time_params=self.time_params, fem_solver=fem_solver,
                               file=self.xdmf_file, boundary_excitation=self.boundary_excitation,
-                              field_updates=self.field_updates, fields=self.fields, mesh=mesh)
+                              field_updates=self.field_updates, fields=self.fields, mesh=mesh, spaces=self.spaces)
         time_step = self.time_step_builder.build()
 
         for (i, t) in enumerate(self.time_params.linear_time_space[1:]):

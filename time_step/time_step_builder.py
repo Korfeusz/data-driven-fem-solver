@@ -15,10 +15,13 @@ class TimeStepBuilder:
         self.fields = None
         self.mesh = None
         self.hdf5_file_name = None
+        self.spaces = None
+        self.strain_file_name = None
+        self.material_parameters_file_name = None
 
     def set(self,  alpha_params=None, time_params=None, fem_solver=None,
                           file=None, boundary_excitation=None, field_updates=None, fields=None,
-            mesh=None, hdf5_file_name=None):
+            mesh=None, hdf5_file_name=None, spaces=None, strain_file_name=None, material_parameters_file_name=None):
         if alpha_params is not None:
             self.alpha_params = alpha_params
         if time_params is not None:
@@ -37,6 +40,12 @@ class TimeStepBuilder:
             self.mesh = mesh
         if hdf5_file_name is not None:
             self.hdf5_file_name = hdf5_file_name
+        if self.spaces is not None:
+            self.spaces = spaces
+        if self.strain_file_name is not None:
+            self.strain_file_name = strain_file_name
+        if self.material_parameters_file_name is not None:
+            self.material_parameters_file_name = material_parameters_file_name
 
 
     def build(self):
@@ -47,4 +56,5 @@ class TimeStepBuilder:
         if self.time_step_type == DDDbTimeStep:
             return DDDbTimeStep(self.alpha_params, self.time_params, self.fem_solver,
                                 self.file, self.boundary_excitation, self.field_updates, self.fields,
-                                self.mesh, self.hdf5_file_name)
+                                self.mesh, self.hdf5_file_name, spaces=self.spaces,
+                                strain_file_name=self.strain_file_name, material_parameters_file_name=self.material_parameters_file_name)
