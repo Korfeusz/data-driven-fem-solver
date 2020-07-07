@@ -8,7 +8,6 @@ from fem_solver import FemSolver
 import fenics
 from problem_definition.external_excitation import ExternalExcitation
 from problem_definition.field_updates import FieldUpdates
-from problem_definition.elastodynamics_fields import ElastodynamicsFields
 import numpy as np
 
 

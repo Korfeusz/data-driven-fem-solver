@@ -6,6 +6,7 @@ from fem_solver import FemSolver, PreAssembledSolver
 from problem_definition import Fields
 from problem_definition.dddb_fields import DDDbFields
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
+from space_definition.normal_function_space_creator import NormalFunctionSpaceCreator
 from time_step import TimeStep, TimeStepBuilder
 from time_step.dddb_time_step import DDDbTimeStep
 from .simulation_parameters import SimulationParameters
@@ -21,7 +22,9 @@ class DDDbParameters(SimulationParameters):
     def spaces(self) -> Spaces:
         vector_space_creator = VectorFunctionSpaceCreator(element_family='CG', degree=1)
         tensor_space_creator = TensorFunctionSpaceCreator(element_family='CG', degree=1)
-        return Spaces(vector_space_creator=vector_space_creator, tensor_space_creator=tensor_space_creator)
+        function_space_creator = NormalFunctionSpaceCreator(element_family='CG', degree=1)
+        return Spaces(vector_space_creator=vector_space_creator, tensor_space_creator=tensor_space_creator,
+                      function_space_creator=function_space_creator)
 
 
     @property
