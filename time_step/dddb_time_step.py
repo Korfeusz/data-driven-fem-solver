@@ -52,6 +52,7 @@ class DDDbTimeStep(TimeStep):
 
     def run(self, i: int):
         print('iteration: {}'.format(i))
+        self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t, i)
         self.hdf5file.load(i)
         self.optimizer.run()
         self.field_updates.run(fields=self.fields)

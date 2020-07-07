@@ -64,7 +64,7 @@ class ElastodynamicsForm(ProblemForm):
     def get_weak_form_lhs(self, fields: Fields) -> fenics.Expression:
         u = fields.u
         w = fields.w
-        return (1 - self.alpha_f) * self.k(u, w, self.constitutive_relation.get_new_value) \
+        return (1. - self.alpha_f) * self.k(u, w, self.constitutive_relation.get_new_value) \
                + self.c_1 * self.c(u, w, self.constitutive_relation.get_new_value) + self.m_1 * self.m(u, w)
 
     def get_weak_form_rhs(self, fields: Fields) -> fenics.Expression:
@@ -77,3 +77,16 @@ class ElastodynamicsForm(ProblemForm):
                + self.c_1 * self.c(u, w, old_relation) - self.c_2 * self.c(v, w, old_relation)\
                - self.c_3 * self.c(a, w, old_relation)\
                + self.m_1 * self.m(u, w) + self.m_2 * self.m(v, w) - self.m_3 * self.m(a, w)
+
+    # def get_weak_form_lhs(self, fields: Fields) -> fenics.Expression:
+    #     u = fields.u
+    #     w = fields.w
+    #     return fenics.inner(self.constitutive_relation.get_new_value(u), fenics.sym(fenics.grad(w))) * fenics.dx
+    #
+    # def get_weak_form_rhs(self, fields: Fields) -> fenics.Expression:
+    #     # u = fields.u_old
+    #     # v = fields.v_old
+    #     # a = fields.a_old
+    #     w = fields.w
+    #     # old_relation = self.constitutive_relation.get_old_value
+    #     return  self.f_ext(w)

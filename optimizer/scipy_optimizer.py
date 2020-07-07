@@ -1,5 +1,4 @@
 import fenics
-
 from problem_definition import DDDbFields
 from .optimizer import Optimizer
 import scipy.optimize as spo
@@ -9,9 +8,9 @@ from space_definition import Spaces
 
 class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
-        self.parameters = initial_values
+        self.parameters = initial_values * 100
         self.fields = fields
-        self.field_to_optimize = fields.new_constitutive_relation_multiplicative_parameters
+        # self.field_to_optimize = fields.new_constitutive_relation_multiplicative_parameters
         self.fem_solver = fem_solver
         self.spaces = spaces
         self._results = None
@@ -22,17 +21,26 @@ class ScipyOptimizer(Optimizer):
         for f in fenics.split(diff):
             u_norm += np.power(fenics.project(f, V=self.spaces.function_space).vector()[:], 2)
         u_norm = np.sqrt(u_norm)
-        return np.sqrt(np.sum(np.power(u_norm, 2)))
+        norm = np.sqrt(np.sum(np.power(u_norm, 2)))
+        print('norm: {}'.format(norm))
+        return norm
 
     def function_to_minimize(self, parameters):
-        self.field_to_optimize.vector()[:] = parameters
+        print(parameters[0:10])
+        self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = parameters
         self.fem_solver.run(self.fields)
-        return self.compare_displacement(self.fields)
+        result = self.compare_displacement(self.fields)
+        return result
 
     def run(self):
-        bounds = None
-        self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-6, method='SLSQP',
-                                     bounds=bounds, options={'maxiter': 1e6})
+        for i in range(100):
+            self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = np.random.random(self.spaces.function_space.dim() * 4)*10
+            self.fem_solver.run(self.fields)
+            print(self.fields.u_new.vector()[0:10])
+            self.compare_displacement(self.fields)
+        # bounds = tuple((0., 100.) for _ in range(self.spaces.function_space.dim() * 4))
+        # self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-6, method='SLSQP', bounds=bounds,
+        #                              options={'maxiter': 1e6})
 
     @property
     def results(self):

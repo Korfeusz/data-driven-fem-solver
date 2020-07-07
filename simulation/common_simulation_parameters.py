@@ -58,7 +58,9 @@ class CommonSimulationParameters:
     @property
     def alpha_params(self) -> GeneralizedAlphaParameters:
         if self._alpha_params is None:
-            self._alpha_params = GeneralizedAlphaParameters(alpha_m=0.2, alpha_f=0.4)
+            # beta = 0.25, gamma = 0.5
+            # alpha_f = 0.4, alpha_m = 0.2
+            self._alpha_params = GeneralizedAlphaParameters(alpha_f = 0.4, alpha_m = 0.2)
         return self._alpha_params
 
     @property

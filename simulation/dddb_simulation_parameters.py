@@ -1,6 +1,6 @@
 from typing import Type
 
-from constitutive_relations import ConstitutiveRelation
+from constitutive_relations import ConstitutiveRelation, LinearHookesLaw
 from constitutive_relations.dddb_constitutive_relation import DDDbConstitutiveRelation
 from fem_solver import FemSolver, PreAssembledSolver
 from problem_definition import Fields
@@ -42,6 +42,7 @@ class DDDbParameters(SimulationParameters):
     def constitutive_relation(self) -> ConstitutiveRelation:
         if self._constitutive_relation is None:
             self._constitutive_relation = DDDbConstitutiveRelation(fields=self.fields)
+            # self._constitutive_relation = LinearHookesLaw(young_modulus=1000.0, poisson_coefficient=0.3)
         return self._constitutive_relation
 
 
