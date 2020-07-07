@@ -60,7 +60,7 @@ class CommonSimulationParameters:
         if self._alpha_params is None:
             # beta = 0.25, gamma = 0.5
             # alpha_f = 0.4, alpha_m = 0.2
-            self._alpha_params = GeneralizedAlphaParameters(alpha_f = 0.4, alpha_m = 0.2)
+            self._alpha_params = GeneralizedAlphaParameters(beta = 0.25, gamma = 0.5, alpha_f = 0.0, alpha_m = 0.0)
         return self._alpha_params
 
     @property

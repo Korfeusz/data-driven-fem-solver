@@ -17,5 +17,4 @@ class Traction(ExternalExcitation):
         return fenics.dot(w, self.force)*self.ds(self.traction_boundary)
 
     def update(self, alpha_params: GeneralizedAlphaParameters, delta_t: float, iteration: int):
-        # self.force.t = (iteration + 1. - alpha_params.alpha_f_float) * delta_t
-        self.force.t = iteration * delta_t
+        self.force.t = (iteration + 1. - alpha_params.alpha_f_float) * delta_t

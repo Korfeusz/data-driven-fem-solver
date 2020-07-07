@@ -64,7 +64,7 @@ class ElastodynamicsForm(ProblemForm):
     def get_weak_form_lhs(self, fields: Fields) -> fenics.Expression:
         u = fields.u
         w = fields.w
-        return (1. - self.alpha_f) * self.k(u, w, self.constitutive_relation.get_new_value) \
+        return (1 - self.alpha_f) * self.k(u, w, self.constitutive_relation.get_new_value) \
                + self.c_1 * self.c(u, w, self.constitutive_relation.get_new_value) + self.m_1 * self.m(u, w)
 
     def get_weak_form_rhs(self, fields: Fields) -> fenics.Expression:

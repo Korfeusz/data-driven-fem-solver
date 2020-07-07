@@ -8,12 +8,13 @@ from space_definition import Spaces
 
 class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
-        self.parameters = initial_values * 100
+        self.parameters = initial_values * 10
         self.fields = fields
         # self.field_to_optimize = fields.new_constitutive_relation_multiplicative_parameters
         self.fem_solver = fem_solver
         self.spaces = spaces
         self._results = None
+        self.it = 0
 
     def compare_displacement(self, fields):
         diff = fenics.project(fields.u_new - fields.imported_displacement_field, V=self.spaces.vector_space)
@@ -22,25 +23,28 @@ class ScipyOptimizer(Optimizer):
             u_norm += np.power(fenics.project(f, V=self.spaces.function_space).vector()[:], 2)
         u_norm = np.sqrt(u_norm)
         norm = np.sqrt(np.sum(np.power(u_norm, 2)))
-        print('norm: {}'.format(norm))
+        # print('norm: {}'.format(norm))
         return norm
 
     def function_to_minimize(self, parameters):
-        print(parameters[0:10])
         self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = parameters
         self.fem_solver.run(self.fields)
         result = self.compare_displacement(self.fields)
+        if self.it % 100 == 0:
+            print('iteration: {}, norm: {}'.format(self.it, result))
+        self.it +=1
         return result
 
     def run(self):
-        for i in range(100):
-            self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = np.random.random(self.spaces.function_space.dim() * 4)*10
-            self.fem_solver.run(self.fields)
-            print(self.fields.u_new.vector()[0:10])
-            self.compare_displacement(self.fields)
-        # bounds = tuple((0., 100.) for _ in range(self.spaces.function_space.dim() * 4))
-        # self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-6, method='SLSQP', bounds=bounds,
-        #                              options={'maxiter': 1e6})
+        # for i in range(3):
+        #     self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = np.random.random(self.spaces.function_space.dim() * 4)*10
+        #     self.fem_solver.run(self.fields)
+        #     print(self.fields.u_new.vector()[0:10])
+        #     self.compare_displacement(self.fields)
+        self.it = 0
+        bounds = tuple((0., 100.) for _ in range(self.spaces.function_space.dim() * 4))
+        self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-6, method='SLSQP', bounds=bounds,
+                                     options={'maxiter': 1e6})
 
     @property
     def results(self):
