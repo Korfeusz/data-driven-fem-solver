@@ -42,13 +42,13 @@ class TimeStepBuilder:
             self.mesh = mesh
         if hdf5_file_name is not None:
             self.hdf5_file_name = hdf5_file_name
-        if self.spaces is not None:
+        if spaces is not None:
             self.spaces = spaces
-        if self.strain_file_name is not None:
+        if strain_file_name is not None:
             self.strain_file_name = strain_file_name
-        if self.material_parameters_file_name is not None:
+        if material_parameters_file_name is not None:
             self.material_parameters_file_name = material_parameters_file_name
-        if self.initial_material_parameters is not None:
+        if initial_material_parameters is not None:
             self.initial_material_parameters = initial_material_parameters
 
 
