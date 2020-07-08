@@ -38,7 +38,9 @@ class Simulation:
                               field_updates=self.field_updates, fields=self.fields, mesh=mesh, spaces=self.spaces)
         time_step = self.time_step_builder.build()
 
-        for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
-            print("Time: ", t)
+        # for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
+        for i in range(15):
+
+            # print("Time: ", t)
             time_step.run(i)
         time_step.close()

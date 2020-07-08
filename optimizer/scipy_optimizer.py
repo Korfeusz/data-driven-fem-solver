@@ -8,7 +8,7 @@ from space_definition import Spaces
 
 class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
-        self.parameters = initial_values * 10
+        self.parameters = (initial_values * 10) - 5.
         self.fields = fields
         # self.field_to_optimize = fields.new_constitutive_relation_multiplicative_parameters
         self.fem_solver = fem_solver
@@ -42,8 +42,9 @@ class ScipyOptimizer(Optimizer):
         #     print(self.fields.u_new.vector()[0:10])
         #     self.compare_displacement(self.fields)
         self.it = 0
-        bounds = tuple((0., 100.) for _ in range(self.spaces.function_space.dim() * 4))
-        self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-6, method='SLSQP', bounds=bounds,
+        # bounds = tuple((0., 100.) for _ in range(self.spaces.function_space.dim() * 4))
+        bounds = None
+        self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-12, method='SLSQP', bounds=bounds,
                                      options={'maxiter': 1e6})
 
     @property
