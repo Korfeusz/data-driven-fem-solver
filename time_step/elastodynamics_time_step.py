@@ -26,7 +26,7 @@ class ElastodynamicsTimeStep(TimeStep):
 
 
     def run(self, i: int):
-        self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t, i)
+        self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
         self.fem_solver.run(self.fields)
         self.field_updates.run(fields=self.fields)
         self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)

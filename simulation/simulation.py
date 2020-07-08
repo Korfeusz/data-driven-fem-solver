@@ -31,6 +31,14 @@ class Simulation:
         ds = fenics.Measure('ds', domain=mesh, subdomain_data=self.boundary_markers.value)
         self.boundary_excitation.set_ds(ds=ds)
         self.fields.initialize(spaces=self.spaces)
+        print('w 1 : ', hash(self.fields.w))
+        print('w 2 : ', hash(self.fields.w))
+        print('u 1 : ', hash(self.fields.u))
+        print('u 2 : ', hash(self.fields.u))
+        print('u_old 1 : ', hash(self.fields.u_old))
+        print('u_old 2 : ', hash(self.fields.u_old))
+        print('v_old 1 : ', hash(self.fields.v_old))
+        print('v_old 2 : ', hash(self.fields.v_old))
         fem_solver = get_fem_solver(fem_solver=self.fem_solver_type, problem=self.problem, fields=self.fields,
                                     boundary_conditions=bc)
         self.time_step_builder.set(alpha_params=self.alpha_params, time_params=self.time_params, fem_solver=fem_solver,
@@ -38,9 +46,9 @@ class Simulation:
                               field_updates=self.field_updates, fields=self.fields, mesh=mesh, spaces=self.spaces)
         time_step = self.time_step_builder.build()
 
-        # for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
-        for i in range(15):
+        for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
+        # for i in range(15):
 
-            # print("Time: ", t)
+            print("Time: ", t)
             time_step.run(i)
         time_step.close()

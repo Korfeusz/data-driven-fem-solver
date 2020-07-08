@@ -1,4 +1,4 @@
-class CallOnce:
+class Lazy:
     def __init__(self, fun):
         self.fun = fun
         self._called = False
