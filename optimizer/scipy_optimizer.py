@@ -44,7 +44,7 @@ class ScipyOptimizer(Optimizer):
         self.it = 0
         # bounds = tuple((0., 100.) for _ in range(self.spaces.function_space.dim() * 4))
         bounds = None
-        self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-12, method='SLSQP', bounds=bounds,
+        self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
                                      options={'maxiter': 1e6})
 
     @property

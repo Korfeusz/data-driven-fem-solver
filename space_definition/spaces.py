@@ -1,10 +1,11 @@
 import fenics
 
+from none_safe import NoneSafe
 from .normal_function_space_creator import NormalFunctionSpaceCreator
 from .vector_function_space_creator import VectorFunctionSpaceCreator
 from .tensor_function_space_creator import TensorFunctionSpaceCreator
 
-class Spaces:
+class Spaces(NoneSafe):
     def __init__(self, vector_space_creator: VectorFunctionSpaceCreator,
                  tensor_space_creator: TensorFunctionSpaceCreator,
                  function_space_creator: NormalFunctionSpaceCreator = None):
