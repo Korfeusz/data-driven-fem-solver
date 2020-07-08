@@ -16,21 +16,15 @@ class DDDbFields(Fields):
     @property
     def old_constitutive_relation_multiplicative_parameters(self) -> fenics.Function:
         if self._old_constitutive_relation_multiplicative_parameters is None:
-            try:
                 self._old_constitutive_relation_multiplicative_parameters = fenics.Function(self.tensor_space,
                                                                                             name='old_db_params')
-            except TypeError:
-                print('Tensor space was not initialized before access')
         return self._old_constitutive_relation_multiplicative_parameters
 
     @property
     def new_constitutive_relation_multiplicative_parameters(self) -> fenics.Function:
         if self._new_constitutive_relation_multiplicative_parameters is None:
-            try:
-                self._new_constitutive_relation_multiplicative_parameters = fenics.Function(self.tensor_space,
+            self._new_constitutive_relation_multiplicative_parameters = fenics.Function(self.tensor_space,
                                                                                             name='new_db_params')
-            except TypeError:
-                print('Tensor space was not initialized before access')
         return self._new_constitutive_relation_multiplicative_parameters
 
     @new_constitutive_relation_multiplicative_parameters.setter
@@ -40,10 +34,7 @@ class DDDbFields(Fields):
     @property
     def imported_displacement_field(self) -> fenics.Function:
         if self._imported_displacement_field is None:
-            try:
-                self._imported_displacement_field = fenics.Function(self.vector_space, name='imported_displacement')
-            except TypeError:
-                print('V space was not initialized before access')
+            self._imported_displacement_field = fenics.Function(self.vector_space, name='imported_displacement')
         return self._imported_displacement_field
 
 
