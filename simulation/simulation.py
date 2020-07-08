@@ -25,7 +25,7 @@ class Simulation:
 
     def run(self) -> None:
         mesh = self.mesh_creator.get_mesh()
-        self.spaces.generate(mesh=mesh)
+        self.spaces.initialize(mesh=mesh)
         self.boundary_markers.mark_boundaries(mesh=mesh)
         bc = self.bc_creator.apply(vector_space=self.spaces.vector_space, boundary_markers=self.boundary_markers.value)
         ds = fenics.Measure('ds', domain=mesh, subdomain_data=self.boundary_markers.value)

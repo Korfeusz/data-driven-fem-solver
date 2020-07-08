@@ -1,12 +1,13 @@
 import abc
 import fenics
 
-from none_safe import NoneSafe
+from init_safe import InitSafe
 from space_definition import Spaces
 
-class Fields(abc.ABC, NoneSafe):
+class Fields(InitSafe):
     @abc.abstractmethod
     def __init__(self):
+        super().__init__()
         self._w = None
         self._u = None
         self._u_old = None
