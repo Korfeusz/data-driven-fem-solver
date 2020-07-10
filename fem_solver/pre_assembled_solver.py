@@ -1,6 +1,7 @@
 from .fem_solver import FemSolver
 import fenics
-from problem_definition import Fields, ProblemForm
+from problem_definition import ProblemForm
+from fields import Fields
 from typing import List
 
 class PreAssembledSolver(FemSolver):

@@ -1,5 +1,5 @@
 import fenics
-from problem_definition import DDDbFields
+from fields import DDDbFields
 from .optimizer import Optimizer
 import scipy.optimize as spo
 import numpy as np

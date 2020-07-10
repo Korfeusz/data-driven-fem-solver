@@ -1,7 +1,7 @@
-from .field_updates import FieldUpdates
+from fields.field_updates import FieldUpdates
 from generalized_alpha_parameters import GeneralizedAlphaParameters
 from time_stepping_parameters import TimeSteppingParameters
-from .fields import Fields
+from fields.fields import Fields
 import fenics
 
 class ElastodynamicsFieldUpdates(FieldUpdates):

@@ -1,5 +1,5 @@
 import abc
-from.fields import Fields
+from fields import Fields
 
 class ProblemForm(abc.ABC):
     @abc.abstractmethod

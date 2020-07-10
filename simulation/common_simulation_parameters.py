@@ -1,7 +1,8 @@
 import fenics
 from generalized_alpha_parameters import GeneralizedAlphaParameters
-from problem_definition import ExternalExcitation, FieldUpdates, ProblemForm, Traction, ElastodynamicsFieldUpdates, \
+from problem_definition import ExternalExcitation, ProblemForm, Traction, \
     ElastodynamicsForm
+from fields import FieldUpdates, ElastodynamicsFieldUpdates
 from space_definition import MeshCreator, BoundaryMarkers, DirichletBCCreator, UnitSquareMeshCreator, \
     SquareBoundaryDefinition, square_side_settings, SquareSideMarkerNames
 from time_stepping_parameters import TimeSteppingParameters

@@ -2,8 +2,8 @@ import abc
 from typing import Type
 
 from fem_solver import FemSolver
-from problem_definition import Fields
-from time_step import TimeStep, TimeStepBuilder
+from fields import Fields
+from time_step import TimeStepBuilder
 from space_definition import Spaces
 
 

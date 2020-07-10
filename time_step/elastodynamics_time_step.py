@@ -5,8 +5,8 @@ from time_stepping_parameters import TimeSteppingParameters
 from fem_solver import FemSolver
 import fenics
 from problem_definition.external_excitation import ExternalExcitation
-from problem_definition.field_updates import FieldUpdates
-from problem_definition.elastodynamics_fields import ElastodynamicsFields
+from fields.field_updates import FieldUpdates
+from fields.elastodynamics_fields import ElastodynamicsFields
 
 class ElastodynamicsTimeStep(TimeStep):
     def __init__(self, alpha_params: GeneralizedAlphaParameters,

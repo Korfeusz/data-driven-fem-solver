@@ -1,16 +1,15 @@
 from typing import Type
 
-from constitutive_relations import ConstitutiveRelation, LinearHookesLaw
-from constitutive_relations.dddb_constitutive_relation import DDDbConstitutiveRelation
+from constitutive_relations import ConstitutiveRelation
+from constitutive_relations import DDDbConstitutiveRelation
 from fem_solver import FemSolver, PreAssembledSolver
-from problem_definition import Fields
-from problem_definition.dddb_fields import DDDbFields
+from fields import DDDbFields
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
 from space_definition.normal_function_space_creator import NormalFunctionSpaceCreator
-from time_step import TimeStep, TimeStepBuilder
+from time_step import TimeStepBuilder
 from time_step.dddb_time_step import DDDbTimeStep
 from .simulation_parameters import SimulationParameters
-import numpy as np
+
 
 class DDDbParameters(SimulationParameters):
     def __init__(self):
@@ -42,7 +41,7 @@ class DDDbParameters(SimulationParameters):
     def constitutive_relation(self) -> ConstitutiveRelation:
         if self._constitutive_relation is None:
             self._constitutive_relation = DDDbConstitutiveRelation(fields=self.fields)
-            # self._constitutive_relation = LinearHookesLaw(young_modulus=1000.0, poisson_coefficient=0.3)
+            # self._constitutive_relation = LinearHookesLaw(young_modulus_or_fields=self.fields, poisson_coefficient=0.3)
         return self._constitutive_relation
 
 

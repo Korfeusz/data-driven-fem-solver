@@ -1,6 +1,6 @@
 from file_handling import HDF5File
 from optimizer import ScipyOptimizer
-from problem_definition import DDDbFields
+from fields import DDDbFields
 from space_definition import Spaces
 from .time_step import TimeStep
 from generalized_alpha_parameters import GeneralizedAlphaParameters
@@ -8,7 +8,7 @@ from time_stepping_parameters import TimeSteppingParameters
 from fem_solver import FemSolver
 import fenics
 from problem_definition.external_excitation import ExternalExcitation
-from problem_definition.field_updates import FieldUpdates
+from fields.field_updates import FieldUpdates
 import numpy as np
 
 

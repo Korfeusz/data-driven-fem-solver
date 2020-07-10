@@ -2,8 +2,8 @@ import abc
 import fenics
 from fem_solver import FemSolver
 from generalized_alpha_parameters import GeneralizedAlphaParameters
-from problem_definition import ExternalExcitation, FieldUpdates
-from problem_definition.fields import Fields
+from problem_definition import ExternalExcitation
+from fields import FieldUpdates
 from time_stepping_parameters import TimeSteppingParameters
 
 

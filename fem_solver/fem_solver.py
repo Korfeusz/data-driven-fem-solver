@@ -1,6 +1,7 @@
 import abc
 from typing import Type, List
-from problem_definition import Fields, ProblemForm
+from problem_definition import ProblemForm
+from fields import Fields
 import fenics
 
 class FemSolver(abc.ABC):

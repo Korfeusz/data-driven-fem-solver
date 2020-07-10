@@ -2,7 +2,7 @@ import fenics
 from constitutive_relations import ConstitutiveRelation
 from generalized_alpha_parameters import GeneralizedAlphaParameters
 from .problem_form import ProblemForm
-from .fields import Fields
+from fields.fields import Fields
 from typing import Callable
 
 class ElastodynamicsForm(ProblemForm):

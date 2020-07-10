@@ -1,5 +1,5 @@
 import fenics
-from problem_definition.dddb_fields import DDDbFields
+from fields import DDDbFields
 from .constitutive_relation import ConstitutiveRelation
 
 class DDDbConstitutiveRelation(ConstitutiveRelation):
