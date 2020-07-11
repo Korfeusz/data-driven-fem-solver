@@ -21,6 +21,7 @@ class TimeStep(abc.ABC):
         self.boundary_excitation = boundary_excitation
         self.field_updates = field_updates
         self.fields = fields
+        self.halt = False
 
     @abc.abstractmethod
     def run(self, i):

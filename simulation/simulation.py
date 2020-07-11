@@ -20,6 +20,7 @@ class Simulation:
         self.time_step_builder = simulation_parameters.time_step_builder
 
 
+
     def run(self) -> None:
         mesh = self.mesh_creator.get_mesh()
         self.spaces.initialize(mesh=mesh)
@@ -37,7 +38,8 @@ class Simulation:
 
         for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
         # for i in range(3):
-
             print("Time: ", t)
             time_step.run(i)
+            if time_step.halt:
+                break
         time_step.close()

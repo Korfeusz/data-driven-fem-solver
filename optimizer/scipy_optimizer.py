@@ -5,6 +5,8 @@ import scipy.optimize as spo
 import numpy as np
 from fem_solver import FemSolver
 from space_definition import Spaces
+import threading
+
 
 class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
@@ -16,9 +18,19 @@ class ScipyOptimizer(Optimizer):
         self.it = 0
         self.exit_value = 1e-2
         self.norm = None
+        self.keep_going = True
+        self.stop_thread = threading.Thread(target=self.key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
+
+    def key_capture_thread(self):
+        input()
+        self.keep_going = False
 
     def exit_condition(self, xk):
         if self.norm < self.exit_value:
+            print('Condition met')
+            raise RuntimeError
+        elif not self.keep_going:
+            print('User exit')
             raise RuntimeError
 
     def compare_displacement(self, fields):
@@ -49,8 +61,9 @@ class ScipyOptimizer(Optimizer):
             self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
                                      options={'maxiter': 1e6}, callback=self.exit_condition)
         except RuntimeError:
-            print('Exited optimizer, condition met')
-            pass
+            print('Exited optimizer')
+            if not self.keep_going:
+                pass
     #         save parameters and fields here
 
     @property

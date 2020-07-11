@@ -65,6 +65,8 @@ class DDDbTimeStep(TimeStep):
         self.optimizer.run()
         self.field_updates.run(fields=self.fields)
         self.out_checkpoint_file.write(i)
+        if not self.optimizer.keep_going:
+            self.halt = True
 
 
 
