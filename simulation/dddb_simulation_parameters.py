@@ -17,7 +17,7 @@ class DDDbParameters(SimulationParameters):
     def __init__(self):
         self._constitutive_relation = None
         self._fields = None
-        self.constitutive_relation_type: Type[ConstitutiveRelation]= DDDbConstitutiveRelation
+        self.constitutive_relation_type: Type[ConstitutiveRelation]= LinearHookesLaw
         self._constitutive_relation = None
         self.set_constitutive_relation_and_fields()
 
