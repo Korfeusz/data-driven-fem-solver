@@ -1,4 +1,4 @@
-from file_handling import HDF5File
+from file_handling import HDF5File, XDMFCheckpointHandler
 from optimizer import ScipyOptimizer
 from fields import DDDbFields
 from space_definition import Spaces
@@ -30,6 +30,11 @@ class DDDbTimeStep(TimeStep):
         super().__init__(alpha_params, time_params, fem_solver, file, boundary_excitation, field_updates, fields)
         self.hdf5file = HDF5File(mesh=mesh, mode='r', file_name=hdf_file_name,
                                  function=fields.imported_displacement_field, function_name=fields.u_new.name())
+
+        self.checkpoint_file = XDMFCheckpointHandler(file_name='checpoint_file.xdmf', append_to_existing=False,
+                                                     field=fields.imported_displacement_field,
+                                                     field_name=fields.u_new.name())
+
         self.tensor_space = spaces.tensor_space
         # self.t2d = fenics.vertex_to_dof_map(spaces.tensor_space)
         self.number_of_vertices = mesh.num_vertices()
@@ -55,7 +60,8 @@ class DDDbTimeStep(TimeStep):
     def run(self, i: int):
         print('iteration: {}'.format(i))
         self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
-        self.hdf5file.load(i)
+        # self.hdf5file.load(i)
+        self.checkpoint_file.load(i)
         self.optimizer.run()
         self.field_updates.run(fields=self.fields)
         self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)
@@ -63,4 +69,5 @@ class DDDbTimeStep(TimeStep):
 
 
     def close(self):
-        self.hdf5file.close()
+        # self.hdf5file.close()
+        self.checkpoint_file.close()
