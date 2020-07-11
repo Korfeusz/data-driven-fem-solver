@@ -1,3 +1,5 @@
+from typing import Optional
+
 import fenics
 from fields import DDDbFields
 from .optimizer import Optimizer
@@ -6,7 +8,7 @@ import numpy as np
 from fem_solver import FemSolver
 from space_definition import Spaces
 import threading
-
+from file_handling import XDMFCheckpointHandler
 
 class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
@@ -20,12 +22,18 @@ class ScipyOptimizer(Optimizer):
         self.norm = None
         self.keep_going = True
         self.stop_thread = threading.Thread(target=self.key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
+        self.save_file: Optional[XDMFCheckpointHandler] = None
 
     def key_capture_thread(self):
         input()
         self.keep_going = False
 
-    def exit_condition(self, xk):
+    def optimizer_callback(self, xk):
+        if self.it % 10 == 0:
+            print('iteration: {}, norm: {}'.format(self.it, self.norm))
+            if self.save_file is not None:
+                self.save_file.write(self.it)
+        self.it +=1
         if self.norm < self.exit_value:
             print('Condition met')
             raise RuntimeError
@@ -46,12 +54,8 @@ class ScipyOptimizer(Optimizer):
     def function_to_minimize(self, parameters):
         self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = parameters
         self.fem_solver.run(self.fields)
-        result = self.compare_displacement(self.fields)
-        self.norm = result
-        if self.it % 100 == 0:
-            print('iteration: {}, norm: {}'.format(self.it, result))
-        self.it +=1
-        return result
+        self.norm = self.compare_displacement(self.fields)
+        return self.norm
 
 
     def run(self):
@@ -59,13 +63,10 @@ class ScipyOptimizer(Optimizer):
         bounds = None
         try:
             spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
-                        options={'maxiter': 1e6}, callback=self.exit_condition)
+                         options={'maxiter': 1e6}, callback=self.optimizer_callback)
         except RuntimeError:
             print('Exited optimizer')
             pass
-        # save parameters
-        # save iteration number
-        # save fields (which?)
 
 
     @property

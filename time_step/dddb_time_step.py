@@ -41,7 +41,6 @@ class DDDbTimeStep(TimeStep):
                                                         field=fields.a_old,
                                                         field_name=fields.a_old.name())
         self.np_files = NPYFile(file_name='dddb_out')
-
         self.tensor_space = spaces.tensor_space
         self.number_of_vertices = mesh.num_vertices()
         self.strain_file_name = strain_file_name
@@ -68,6 +67,8 @@ class DDDbTimeStep(TimeStep):
         print('iteration: {}'.format(i))
         self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
         self.in_checkpoint_file.load(i)
+        self.optimizer.save_file = XDMFCheckpointHandler(file_name='optimizer_save_file_{}.xdmf'.format(i), append_to_existing=False,
+                                                         field=self.fields.u_new, field_name=self.fields.u_new.name())
         self.optimizer.run()
         self.v_out_checkpoint_file.write(i)
         self.a_out_checkpoint_file.write(i)
