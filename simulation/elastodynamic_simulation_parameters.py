@@ -6,6 +6,7 @@ from fields import Fields, ElastodynamicsFields
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
 from time_step import TimeStep, ElastodynamicsTimeStep, TimeStepBuilder
 from .simulation_parameters import SimulationParameters
+from file_handling import XDMFCheckpointHandler
 
 
 class ElastodynamicSimulationParameters(SimulationParameters):

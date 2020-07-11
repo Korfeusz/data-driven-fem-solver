@@ -1,4 +1,4 @@
-from file_handling import HDF5File
+from file_handling import HDF5File, XDMFCheckpointHandler
 from .time_step import TimeStep
 from generalized_alpha_parameters import GeneralizedAlphaParameters
 from time_stepping_parameters import TimeSteppingParameters
@@ -7,6 +7,7 @@ import fenics
 from problem_definition.external_excitation import ExternalExcitation
 from fields.field_updates import FieldUpdates
 from fields.elastodynamics_fields import ElastodynamicsFields
+
 
 class ElastodynamicsTimeStep(TimeStep):
     def __init__(self, alpha_params: GeneralizedAlphaParameters,
@@ -22,6 +23,9 @@ class ElastodynamicsTimeStep(TimeStep):
 
         self.hdf5file = HDF5File(mesh=mesh, mode='w',file_name=hdf_file_name,
                                  function=fields.u_new, function_name=fields.u_new.name())
+        #
+        self.checkpoint_file = XDMFCheckpointHandler(file_name='checpoint_file.xdmf', append_to_existing=False,
+                                                     field=fields.u_new, field_name=fields.u_new.name())
 
 
 
@@ -31,6 +35,8 @@ class ElastodynamicsTimeStep(TimeStep):
         self.field_updates.run(fields=self.fields)
         self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)
         self.hdf5file.write(i)
+        self.checkpoint_file.write(i)
 
     def close(self):
         self.hdf5file.close()
+        self.checkpoint_file.close()
