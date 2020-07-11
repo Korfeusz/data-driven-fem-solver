@@ -1,4 +1,4 @@
-from file_handling import HDF5File, XDMFCheckpointHandler
+from file_handling import HDF5File, XDMFCheckpointHandler, NPYFile
 from optimizer import ScipyOptimizer
 from fields import DDDbFields
 from space_definition import Spaces
@@ -40,9 +40,9 @@ class DDDbTimeStep(TimeStep):
         self.a_out_checkpoint_file = XDMFCheckpointHandler(file_name='a_{}'.format(out_checkpoint_file_name), append_to_existing=False,
                                                         field=fields.a_old,
                                                         field_name=fields.a_old.name())
+        self.np_files = NPYFile(file_name='dddb_out')
 
         self.tensor_space = spaces.tensor_space
-        # self.t2d = fenics.vertex_to_dof_map(spaces.tensor_space)
         self.number_of_vertices = mesh.num_vertices()
         self.strain_file_name = strain_file_name
         self.material_parameters_file_name = material_parameters_file_name
@@ -57,10 +57,11 @@ class DDDbTimeStep(TimeStep):
     def transform_material_parameters(self):
         strain_vec = fenics.project(fenics.sym(fenics.grad(self.fields.u_new)), V=self.tensor_space).vector()[:]
         strain_tens = np.reshape(strain_vec, newshape=(self.number_of_vertices, 2, 2))
-        parameters_vec = fenics.project(self.fields.new_constitutive_relation_multiplicative_parameters,
-                                        V=self.tensor_space).vector()[:]
-        parameters_tens = np.reshape(parameters_vec, newshape=(self.number_of_vertices, 2, 2))
-        return strain_tens, parameters_tens
+        parameters = fenics.project(self.fields.new_constitutive_relation_multiplicative_parameters,
+                                        V=self.fields.new_constitutive_relation_multiplicative_parameters.function_space()).vector()[:]
+        if self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim() == self.fields.tensor_space.dim():
+            parameters = np.reshape(parameters, newshape=(self.number_of_vertices, 2, 2))
+        return strain_tens, parameters
 
 
     def run(self, i: int):
@@ -70,8 +71,9 @@ class DDDbTimeStep(TimeStep):
         self.optimizer.run()
         self.v_out_checkpoint_file.write(i)
         self.a_out_checkpoint_file.write(i)
-        # save optimizer_params to npy file (new for each iteration)
-        # save epsilon(u_new) to npy file (new for each iteration)
+        strain, parameters = self.transform_material_parameters()
+        self.np_files.write(prefix='strain', iteration=i, array=strain)
+        self.np_files.write(prefix='params', iteration=i, array=parameters)
         self.field_updates.run(fields=self.fields)
         self.out_checkpoint_file.write(i)
         if not self.optimizer.keep_going:

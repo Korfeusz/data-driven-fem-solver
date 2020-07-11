@@ -4,14 +4,12 @@ import numpy as np
 class NPYFile:
     def __init__(self, file_name: str):
         self.file_name = file_name
-        self.file = open(file=file_name, mode='ab')
+        self.file_name = file_name
 
-    def write(self, array: np.ndarray):
-        np.save(self.file, array)
+    def write(self, prefix: str, iteration: int, array: np.ndarray):
+        np.save('{}_{}_{}.npy'.format(prefix, self.file_name, iteration), array)
 
 
-    def load(self, iteration):
-        pass
+    def load(self, prefix: str, iteration: int):
+        return np.load('{}_{}_{}.npy'.format(prefix, self.file_name, iteration))
 
-    def close(self):
-        self.file.close()
