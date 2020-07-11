@@ -10,11 +10,16 @@ class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
         self.parameters = (initial_values * 10) - 5.
         self.fields = fields
-        # self.field_to_optimize = fields.new_constitutive_relation_multiplicative_parameters
         self.fem_solver = fem_solver
         self.spaces = spaces
         self._results = None
         self.it = 0
+        self.exit_value = 1e-2
+        self.norm = None
+
+    def exit_condition(self, xk):
+        if self.norm < self.exit_value:
+            raise RuntimeError
 
     def compare_displacement(self, fields):
         diff = fenics.project(fields.u_new - fields.imported_displacement_field, V=self.spaces.vector_space)
@@ -30,22 +35,23 @@ class ScipyOptimizer(Optimizer):
         self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = parameters
         self.fem_solver.run(self.fields)
         result = self.compare_displacement(self.fields)
+        self.norm = result
         if self.it % 100 == 0:
             print('iteration: {}, norm: {}'.format(self.it, result))
         self.it +=1
         return result
 
+
     def run(self):
-        # for i in range(3):
-        #     self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = np.random.random(self.spaces.function_space.dim() * 4)*10
-        #     self.fem_solver.run(self.fields)
-        #     print(self.fields.u_new.vector()[0:10])
-        #     self.compare_displacement(self.fields)
         self.it = 0
-        # bounds = tuple((0., 100.) for _ in range(self.spaces.function_space.dim() * 4))
         bounds = None
-        self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
-                                     options={'maxiter': 1e6})
+        try:
+            self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
+                                     options={'maxiter': 1e6}, callback=self.exit_condition)
+        except RuntimeError:
+            print('Exited optimizer, condition met')
+            pass
+    #         save parameters and fields here
 
     @property
     def results(self):
