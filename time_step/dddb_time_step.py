@@ -26,11 +26,16 @@ class DDDbTimeStep(TimeStep):
                  strain_file_name: str,
                  material_parameters_file_name: str,
                  initial_material_parameters: np.ndarray,
-                 checkpoint_file_name: str):
+                 in_checkpoint_file_name: str,
+                 out_checkpoint_file_name: str):
         super().__init__(alpha_params, time_params, fem_solver, file, boundary_excitation, field_updates, fields)
-        self.checkpoint_file = XDMFCheckpointHandler(file_name=checkpoint_file_name, append_to_existing=False,
-                                                     field=fields.imported_displacement_field,
-                                                     field_name=fields.u_new.name())
+        self.in_checkpoint_file = XDMFCheckpointHandler(file_name=in_checkpoint_file_name, append_to_existing=False,
+                                                        field=fields.imported_displacement_field,
+                                                        field_name=fields.u_new.name())
+        print(out_checkpoint_file_name)
+        self.out_checkpoint_file = XDMFCheckpointHandler(file_name=out_checkpoint_file_name, append_to_existing=False,
+                                                        field=fields.u_new,
+                                                        field_name=fields.u_new.name())
 
         self.tensor_space = spaces.tensor_space
         # self.t2d = fenics.vertex_to_dof_map(spaces.tensor_space)
@@ -57,12 +62,14 @@ class DDDbTimeStep(TimeStep):
     def run(self, i: int):
         print('iteration: {}'.format(i))
         self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
-        self.checkpoint_file.load(i)
+        self.in_checkpoint_file.load(i)
         self.optimizer.run()
         self.field_updates.run(fields=self.fields)
-        self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)
+        self.out_checkpoint_file.write(i)
+        # self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)
 
 
 
     def close(self):
-        self.checkpoint_file.close()
+        self.in_checkpoint_file.close()
+        self.out_checkpoint_file.close()

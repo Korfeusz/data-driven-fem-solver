@@ -15,6 +15,8 @@ class TimeStepBuilder:
         self.fields = None
         self.mesh = None
         self.checkpoint_file_name = None
+        self.in_checkpoint_file_name = None
+        self.out_checkpoint_file_name = None
         self.spaces = None
         self.strain_file_name = None
         self.material_parameters_file_name = None
@@ -23,7 +25,7 @@ class TimeStepBuilder:
     def set(self, alpha_params=None, time_params=None, fem_solver=None,
             file=None, boundary_excitation=None, field_updates=None, fields=None,
             mesh=None, checkpoint_file_name=None, spaces=None, strain_file_name=None, material_parameters_file_name=None,
-            initial_material_parameters=None):
+            initial_material_parameters=None, in_checkpoint_file_name=None, out_checkpoint_file_name=None):
         if alpha_params is not None:
             self.alpha_params = alpha_params
         if time_params is not None:
@@ -50,6 +52,11 @@ class TimeStepBuilder:
             self.material_parameters_file_name = material_parameters_file_name
         if initial_material_parameters is not None:
             self.initial_material_parameters = initial_material_parameters
+        if in_checkpoint_file_name is not None:
+            self.in_checkpoint_file_name = in_checkpoint_file_name
+        if out_checkpoint_file_name is not None:
+            self.out_checkpoint_file_name = out_checkpoint_file_name
+
 
 
     def build(self):
@@ -61,7 +68,9 @@ class TimeStepBuilder:
             return DDDbTimeStep(alpha_params=self.alpha_params, time_params=self.time_params, fem_solver=self.fem_solver,
                                 file=self.file, boundary_excitation=self.boundary_excitation,
                                 field_updates=self.field_updates, fields=self.fields,
-                                checkpoint_file_name=self.checkpoint_file_name, mesh=self.mesh, spaces=self.spaces,
+                                in_checkpoint_file_name=self.in_checkpoint_file_name,
+                                out_checkpoint_file_name=self.out_checkpoint_file_name,
+                                mesh=self.mesh, spaces=self.spaces,
                                 strain_file_name=self.strain_file_name,
                                 material_parameters_file_name=self.material_parameters_file_name,
                                 initial_material_parameters=self.initial_material_parameters)
