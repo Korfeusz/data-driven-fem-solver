@@ -18,10 +18,7 @@ class Simulation:
         self.alpha_params = common_simulation_parameters.alpha_params
         self.time_params = common_simulation_parameters.time_params
         self.time_step_builder = simulation_parameters.time_step_builder
-        self.xdmf_file = fenics.XDMFFile(simulation_parameters.save_file_name)
-        self.xdmf_file.parameters["flush_output"] = True
-        self.xdmf_file.parameters["functions_share_mesh"] = True
-        self.xdmf_file.parameters["rewrite_function_mesh"] = False
+
 
     def run(self) -> None:
         mesh = self.mesh_creator.get_mesh()
@@ -34,13 +31,13 @@ class Simulation:
         fem_solver = get_fem_solver(fem_solver=self.fem_solver_type, problem=self.problem, fields=self.fields,
                                     boundary_conditions=bc)
         self.time_step_builder.set(alpha_params=self.alpha_params, time_params=self.time_params, fem_solver=fem_solver,
-                              file=self.xdmf_file, boundary_excitation=self.boundary_excitation,
+                              boundary_excitation=self.boundary_excitation,
                               field_updates=self.field_updates, fields=self.fields, mesh=mesh, spaces=self.spaces)
         time_step = self.time_step_builder.build()
 
-        # for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
-        for i in range(3):
+        for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
+        # for i in range(3):
 
-            # print("Time: ", t)
+            print("Time: ", t)
             time_step.run(i)
         time_step.close()

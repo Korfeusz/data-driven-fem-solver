@@ -43,8 +43,3 @@ class ElastodynamicSimulationParameters(SimulationParameters):
         tsb.set(checkpoint_file_name='checkpoint_file.xdmf')
         return tsb
 
-
-    @property
-    def save_file_name(self) -> str:
-        return 'test_results.xdmf'
-

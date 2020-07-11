@@ -33,11 +33,6 @@ class SimulationParameters(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def save_file_name(self) -> str:
-        pass
-
-    @property
-    @abc.abstractmethod
     def constitutive_relation(self):
         pass
 

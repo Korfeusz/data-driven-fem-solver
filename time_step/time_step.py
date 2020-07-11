@@ -12,14 +12,12 @@ class TimeStep(abc.ABC):
     def __init__(self, alpha_params: GeneralizedAlphaParameters,
                  time_params: TimeSteppingParameters,
                  fem_solver: FemSolver,
-                 file: fenics.XDMFFile,
                  boundary_excitation: ExternalExcitation,
                  field_updates: FieldUpdates,
                  fields):
         self.alpha_params = alpha_params
         self.time_params = time_params
         self.fem_solver = fem_solver
-        self.file = file
         self.boundary_excitation = boundary_excitation
         self.field_updates = field_updates
         self.fields = fields

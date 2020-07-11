@@ -9,7 +9,6 @@ class TimeStepBuilder:
         self.alpha_params = None
         self.time_params = None
         self.fem_solver = None
-        self.file = None
         self.boundary_excitation = None
         self.field_updates = None
         self.fields = None
@@ -23,7 +22,7 @@ class TimeStepBuilder:
         self.initial_material_parameters = None
 
     def set(self, alpha_params=None, time_params=None, fem_solver=None,
-            file=None, boundary_excitation=None, field_updates=None, fields=None,
+            boundary_excitation=None, field_updates=None, fields=None,
             mesh=None, checkpoint_file_name=None, spaces=None, strain_file_name=None, material_parameters_file_name=None,
             initial_material_parameters=None, in_checkpoint_file_name=None, out_checkpoint_file_name=None):
         if alpha_params is not None:
@@ -32,8 +31,6 @@ class TimeStepBuilder:
             self.time_params = time_params
         if fem_solver is not None:
             self.fem_solver = fem_solver
-        if file is not None:
-            self.file = file
         if boundary_excitation is not None:
             self.boundary_excitation = boundary_excitation
         if field_updates is not None:
@@ -61,12 +58,13 @@ class TimeStepBuilder:
 
     def build(self):
         if self.time_step_type == ElastodynamicsTimeStep:
-            return ElastodynamicsTimeStep(self.alpha_params, self.time_params, self.fem_solver,
-                                          self.file, self.boundary_excitation, self.field_updates,
-                                          self.fields, checkpoint_file_name=self.checkpoint_file_name)
+            return ElastodynamicsTimeStep(alpha_params=self.alpha_params, time_params=self.time_params,
+                                          fem_solver=self.fem_solver,
+                                          boundary_excitation=self.boundary_excitation, field_updates=self.field_updates,
+                                          fields=self.fields, checkpoint_file_name=self.checkpoint_file_name)
         if self.time_step_type == DDDbTimeStep:
             return DDDbTimeStep(alpha_params=self.alpha_params, time_params=self.time_params, fem_solver=self.fem_solver,
-                                file=self.file, boundary_excitation=self.boundary_excitation,
+                                boundary_excitation=self.boundary_excitation,
                                 field_updates=self.field_updates, fields=self.fields,
                                 in_checkpoint_file_name=self.in_checkpoint_file_name,
                                 out_checkpoint_file_name=self.out_checkpoint_file_name,

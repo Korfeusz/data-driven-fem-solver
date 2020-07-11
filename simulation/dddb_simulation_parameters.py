@@ -66,9 +66,3 @@ class DDDbParameters(SimulationParameters):
                 material_parameters_file_name='material_params.npy',
                 strain_file_name='strain.npy')
         return tsb
-
-
-    @property
-    def save_file_name(self) -> str:
-        return 'db_test_results.xdmf'
-

@@ -17,7 +17,6 @@ class DDDbTimeStep(TimeStep):
     def __init__(self, alpha_params: GeneralizedAlphaParameters,
                  time_params: TimeSteppingParameters,
                  fem_solver: FemSolver,
-                 file: fenics.XDMFFile,
                  boundary_excitation: ExternalExcitation,
                  field_updates: FieldUpdates,
                  fields: DDDbFields,
@@ -28,7 +27,7 @@ class DDDbTimeStep(TimeStep):
                  initial_material_parameters: np.ndarray,
                  in_checkpoint_file_name: str,
                  out_checkpoint_file_name: str):
-        super().__init__(alpha_params, time_params, fem_solver, file, boundary_excitation, field_updates, fields)
+        super().__init__(alpha_params, time_params, fem_solver, boundary_excitation, field_updates, fields)
         self.in_checkpoint_file = XDMFCheckpointHandler(file_name=in_checkpoint_file_name, append_to_existing=False,
                                                         field=fields.imported_displacement_field,
                                                         field_name=fields.u_new.name())
@@ -66,7 +65,6 @@ class DDDbTimeStep(TimeStep):
         self.optimizer.run()
         self.field_updates.run(fields=self.fields)
         self.out_checkpoint_file.write(i)
-        # self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)
 
 
 
