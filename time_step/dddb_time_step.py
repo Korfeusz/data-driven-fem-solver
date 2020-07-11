@@ -22,16 +22,13 @@ class DDDbTimeStep(TimeStep):
                  field_updates: FieldUpdates,
                  fields: DDDbFields,
                  mesh: fenics.Mesh,
-                 hdf_file_name: str,
                  spaces: Spaces,
                  strain_file_name: str,
                  material_parameters_file_name: str,
-                 initial_material_parameters: np.ndarray):
+                 initial_material_parameters: np.ndarray,
+                 checkpoint_file_name: str):
         super().__init__(alpha_params, time_params, fem_solver, file, boundary_excitation, field_updates, fields)
-        self.hdf5file = HDF5File(mesh=mesh, mode='r', file_name=hdf_file_name,
-                                 function=fields.imported_displacement_field, function_name=fields.u_new.name())
-
-        self.checkpoint_file = XDMFCheckpointHandler(file_name='checpoint_file.xdmf', append_to_existing=False,
+        self.checkpoint_file = XDMFCheckpointHandler(file_name=checkpoint_file_name, append_to_existing=False,
                                                      field=fields.imported_displacement_field,
                                                      field_name=fields.u_new.name())
 
@@ -60,7 +57,6 @@ class DDDbTimeStep(TimeStep):
     def run(self, i: int):
         print('iteration: {}'.format(i))
         self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
-        # self.hdf5file.load(i)
         self.checkpoint_file.load(i)
         self.optimizer.run()
         self.field_updates.run(fields=self.fields)
@@ -69,5 +65,4 @@ class DDDbTimeStep(TimeStep):
 
 
     def close(self):
-        # self.hdf5file.close()
         self.checkpoint_file.close()

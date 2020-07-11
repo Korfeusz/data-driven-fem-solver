@@ -17,14 +17,9 @@ class ElastodynamicsTimeStep(TimeStep):
                  boundary_excitation: ExternalExcitation,
                  field_updates: FieldUpdates,
                  fields: ElastodynamicsFields,
-                 mesh: fenics.Mesh,
-                 hdf_file_name: str):
+                 checkpoint_file_name: str):
         super().__init__(alpha_params, time_params, fem_solver, file, boundary_excitation, field_updates, fields)
-
-        self.hdf5file = HDF5File(mesh=mesh, mode='w',file_name=hdf_file_name,
-                                 function=fields.u_new, function_name=fields.u_new.name())
-        #
-        self.checkpoint_file = XDMFCheckpointHandler(file_name='checpoint_file.xdmf', append_to_existing=False,
+        self.checkpoint_file = XDMFCheckpointHandler(file_name=checkpoint_file_name, append_to_existing=False,
                                                      field=fields.u_new, field_name=fields.u_new.name())
 
 
@@ -34,9 +29,7 @@ class ElastodynamicsTimeStep(TimeStep):
         self.fem_solver.run(self.fields)
         self.field_updates.run(fields=self.fields)
         self.file.write(self.fields.u_new, (i + 1)*self.time_params.delta_t_float)
-        self.hdf5file.write(i)
         self.checkpoint_file.write(i)
 
     def close(self):
-        self.hdf5file.close()
         self.checkpoint_file.close()

@@ -14,15 +14,15 @@ class TimeStepBuilder:
         self.field_updates = None
         self.fields = None
         self.mesh = None
-        self.hdf5_file_name = None
+        self.checkpoint_file_name = None
         self.spaces = None
         self.strain_file_name = None
         self.material_parameters_file_name = None
         self.initial_material_parameters = None
 
-    def set(self,  alpha_params=None, time_params=None, fem_solver=None,
-                          file=None, boundary_excitation=None, field_updates=None, fields=None,
-            mesh=None, hdf5_file_name=None, spaces=None, strain_file_name=None, material_parameters_file_name=None,
+    def set(self, alpha_params=None, time_params=None, fem_solver=None,
+            file=None, boundary_excitation=None, field_updates=None, fields=None,
+            mesh=None, checkpoint_file_name=None, spaces=None, strain_file_name=None, material_parameters_file_name=None,
             initial_material_parameters=None):
         if alpha_params is not None:
             self.alpha_params = alpha_params
@@ -40,8 +40,8 @@ class TimeStepBuilder:
             self.fields = fields
         if mesh is not None:
             self.mesh = mesh
-        if hdf5_file_name is not None:
-            self.hdf5_file_name = hdf5_file_name
+        if checkpoint_file_name is not None:
+            self.checkpoint_file_name = checkpoint_file_name
         if spaces is not None:
             self.spaces = spaces
         if strain_file_name is not None:
@@ -56,11 +56,12 @@ class TimeStepBuilder:
         if self.time_step_type == ElastodynamicsTimeStep:
             return ElastodynamicsTimeStep(self.alpha_params, self.time_params, self.fem_solver,
                                           self.file, self.boundary_excitation, self.field_updates,
-                                          self.fields, self.mesh, self.hdf5_file_name)
+                                          self.fields, checkpoint_file_name=self.checkpoint_file_name)
         if self.time_step_type == DDDbTimeStep:
-            return DDDbTimeStep(self.alpha_params, self.time_params, self.fem_solver,
-                                self.file, self.boundary_excitation, self.field_updates, self.fields,
-                                self.mesh, self.hdf5_file_name, spaces=self.spaces,
+            return DDDbTimeStep(alpha_params=self.alpha_params, time_params=self.time_params, fem_solver=self.fem_solver,
+                                file=self.file, boundary_excitation=self.boundary_excitation,
+                                field_updates=self.field_updates, fields=self.fields,
+                                checkpoint_file_name=self.checkpoint_file_name, mesh=self.mesh, spaces=self.spaces,
                                 strain_file_name=self.strain_file_name,
                                 material_parameters_file_name=self.material_parameters_file_name,
                                 initial_material_parameters=self.initial_material_parameters)

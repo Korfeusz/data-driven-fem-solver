@@ -40,7 +40,7 @@ class ElastodynamicSimulationParameters(SimulationParameters):
     @property
     def time_step_builder(self) -> TimeStepBuilder:
         tsb = TimeStepBuilder(time_step_type=ElastodynamicsTimeStep)
-        tsb.set(hdf5_file_name='saving_elastic.h5')
+        tsb.set(checkpoint_file_name='checkpoint_file.xdmf')
         return tsb
 
 
