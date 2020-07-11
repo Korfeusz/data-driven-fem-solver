@@ -1,5 +1,5 @@
 import fenics
-from fields import DDDbFields
+from fields import DDDbFields, DataDrivenParametersSpaceName
 from .constitutive_relation import ConstitutiveRelation
 
 class DDDbConstitutiveRelation(ConstitutiveRelation):

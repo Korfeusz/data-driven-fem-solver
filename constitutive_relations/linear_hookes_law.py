@@ -1,7 +1,7 @@
 from typing import Union
 
 from lazy import Lazy
-from fields import DDDbFields
+from fields import DDDbFields, DataDrivenParametersSpaceName
 from .constitutive_relation import ConstitutiveRelation
 import fenics
 
@@ -10,6 +10,7 @@ class LinearHookesLaw(ConstitutiveRelation):
     def __init__(self, poisson_coefficient: float, young_modulus_or_fields: Union[float, DDDbFields]):
         self._young_modulus_or_fields = young_modulus_or_fields
         self.poisson_coefficient = fenics.Constant(poisson_coefficient)
+
 
     @property
     @Lazy

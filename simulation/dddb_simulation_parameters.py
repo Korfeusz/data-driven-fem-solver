@@ -1,20 +1,36 @@
 from typing import Type
 
 from constitutive_relations import ConstitutiveRelation
-from constitutive_relations import DDDbConstitutiveRelation
+from constitutive_relations import DDDbConstitutiveRelation, LinearHookesLaw
 from fem_solver import FemSolver, PreAssembledSolver
 from fields import DDDbFields
+from lazy import Lazy
 from space_definition import Spaces, VectorFunctionSpaceCreator, TensorFunctionSpaceCreator
 from space_definition.normal_function_space_creator import NormalFunctionSpaceCreator
 from time_step import TimeStepBuilder
 from time_step.dddb_time_step import DDDbTimeStep
 from .simulation_parameters import SimulationParameters
+from fields import DataDrivenParametersSpaceName
 
 
 class DDDbParameters(SimulationParameters):
     def __init__(self):
         self._constitutive_relation = None
         self._fields = None
+        self.constitutive_relation_type: Type[ConstitutiveRelation]= DDDbConstitutiveRelation
+        self._constitutive_relation = None
+        self.set_constitutive_relation_and_fields()
+
+
+
+    def set_constitutive_relation_and_fields(self) -> None:
+        if self.constitutive_relation_type is LinearHookesLaw:
+            self._fields = DDDbFields(DataDrivenParametersSpaceName.FUNCTION_SPACE)
+            self._constitutive_relation = LinearHookesLaw(young_modulus_or_fields=self.fields, poisson_coefficient=0.3)
+        elif self.constitutive_relation_type is DDDbConstitutiveRelation:
+            self._fields = DDDbFields(DataDrivenParametersSpaceName.TENSOR_SPACE)
+            self._constitutive_relation = DDDbConstitutiveRelation(fields=self.fields)
+
 
 
     @property
@@ -27,9 +43,8 @@ class DDDbParameters(SimulationParameters):
 
 
     @property
+    @Lazy
     def fields(self) -> DDDbFields:
-        if self._fields is None:
-            self._fields = DDDbFields()
         return self._fields
 
 
@@ -38,10 +53,8 @@ class DDDbParameters(SimulationParameters):
         return PreAssembledSolver
 
     @property
+    @Lazy
     def constitutive_relation(self) -> ConstitutiveRelation:
-        if self._constitutive_relation is None:
-            self._constitutive_relation = DDDbConstitutiveRelation(fields=self.fields)
-            # self._constitutive_relation = LinearHookesLaw(young_modulus_or_fields=self.fields, poisson_coefficient=0.3)
         return self._constitutive_relation
 
 

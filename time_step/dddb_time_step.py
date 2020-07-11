@@ -36,7 +36,9 @@ class DDDbTimeStep(TimeStep):
         self.strain_file_name = strain_file_name
         self.material_parameters_file_name = material_parameters_file_name
         self.fields = fields
-        self.optimizer = ScipyOptimizer(fields=self.fields, initial_values=np.random.random(self.number_of_vertices * 4),
+        initial_values_for_optimizer = np.random.random(
+            self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim())
+        self.optimizer = ScipyOptimizer(fields=self.fields, initial_values=initial_values_for_optimizer,
                                         fem_solver=fem_solver, spaces=spaces)
 
 
