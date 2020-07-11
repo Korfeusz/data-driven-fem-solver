@@ -31,10 +31,15 @@ class DDDbTimeStep(TimeStep):
         self.in_checkpoint_file = XDMFCheckpointHandler(file_name=in_checkpoint_file_name, append_to_existing=False,
                                                         field=fields.imported_displacement_field,
                                                         field_name=fields.u_new.name())
-        print(out_checkpoint_file_name)
         self.out_checkpoint_file = XDMFCheckpointHandler(file_name=out_checkpoint_file_name, append_to_existing=False,
                                                         field=fields.u_new,
                                                         field_name=fields.u_new.name())
+        self.v_out_checkpoint_file = XDMFCheckpointHandler(file_name='v_{}'.format(out_checkpoint_file_name), append_to_existing=False,
+                                                        field=fields.v_old,
+                                                        field_name=fields.v_old.name())
+        self.a_out_checkpoint_file = XDMFCheckpointHandler(file_name='a_{}'.format(out_checkpoint_file_name), append_to_existing=False,
+                                                        field=fields.a_old,
+                                                        field_name=fields.a_old.name())
 
         self.tensor_space = spaces.tensor_space
         # self.t2d = fenics.vertex_to_dof_map(spaces.tensor_space)
@@ -63,6 +68,10 @@ class DDDbTimeStep(TimeStep):
         self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
         self.in_checkpoint_file.load(i)
         self.optimizer.run()
+        self.v_out_checkpoint_file.write(i)
+        self.a_out_checkpoint_file.write(i)
+        # save optimizer_params to npy file (new for each iteration)
+        # save epsilon(u_new) to npy file (new for each iteration)
         self.field_updates.run(fields=self.fields)
         self.out_checkpoint_file.write(i)
         if not self.optimizer.keep_going:
@@ -73,3 +82,5 @@ class DDDbTimeStep(TimeStep):
     def close(self):
         self.in_checkpoint_file.close()
         self.out_checkpoint_file.close()
+        self.a_out_checkpoint_file.close()
+        self.v_out_checkpoint_file.close()

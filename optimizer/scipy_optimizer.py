@@ -58,13 +58,15 @@ class ScipyOptimizer(Optimizer):
         self.it = 0
         bounds = None
         try:
-            self._results = spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
-                                     options={'maxiter': 1e6}, callback=self.exit_condition)
+            spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
+                        options={'maxiter': 1e6}, callback=self.exit_condition)
         except RuntimeError:
             print('Exited optimizer')
-            if not self.keep_going:
-                pass
-    #         save parameters and fields here
+            pass
+        # save parameters
+        # save iteration number
+        # save fields (which?)
+
 
     @property
     def results(self):
