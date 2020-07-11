@@ -8,8 +8,3 @@ class Optimizer(abc.ABC):
     @abc.abstractmethod
     def run(self):
         pass
-
-    @property
-    @abc.abstractmethod
-    def results(self):
-        pass

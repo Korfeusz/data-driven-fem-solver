@@ -17,13 +17,12 @@ class TimeStepBuilder:
         self.in_checkpoint_file_name = None
         self.out_checkpoint_file_name = None
         self.spaces = None
-        self.strain_file_name = None
-        self.material_parameters_file_name = None
+        self.dddb_output_file_name = None
         self.initial_material_parameters = None
 
     def set(self, alpha_params=None, time_params=None, fem_solver=None,
             boundary_excitation=None, field_updates=None, fields=None,
-            mesh=None, checkpoint_file_name=None, spaces=None, strain_file_name=None, material_parameters_file_name=None,
+            mesh=None, checkpoint_file_name=None, spaces=None, dddb_output_file=None,
             initial_material_parameters=None, in_checkpoint_file_name=None, out_checkpoint_file_name=None):
         if alpha_params is not None:
             self.alpha_params = alpha_params
@@ -43,10 +42,8 @@ class TimeStepBuilder:
             self.checkpoint_file_name = checkpoint_file_name
         if spaces is not None:
             self.spaces = spaces
-        if strain_file_name is not None:
-            self.strain_file_name = strain_file_name
-        if material_parameters_file_name is not None:
-            self.material_parameters_file_name = material_parameters_file_name
+        if dddb_output_file is not None:
+            self.dddb_output_file_name = dddb_output_file
         if initial_material_parameters is not None:
             self.initial_material_parameters = initial_material_parameters
         if in_checkpoint_file_name is not None:
@@ -69,6 +66,6 @@ class TimeStepBuilder:
                                 in_checkpoint_file_name=self.in_checkpoint_file_name,
                                 out_checkpoint_file_name=self.out_checkpoint_file_name,
                                 mesh=self.mesh, spaces=self.spaces,
-                                strain_file_name=self.strain_file_name,
-                                material_parameters_file_name=self.material_parameters_file_name,
-                                initial_material_parameters=self.initial_material_parameters)
+                                dddb_output_file=self.dddb_output_file_name,
+                                initial_material_parameters=self.initial_material_parameters
+                                )

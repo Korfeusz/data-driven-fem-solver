@@ -62,13 +62,8 @@ class ScipyOptimizer(Optimizer):
         self.it = 0
         bounds = None
         try:
-            spo.minimize(self.function_to_minimize, self.parameters, tol=1e-15, method='SLSQP', bounds=bounds,
+            spo.minimize(self.function_to_minimize, self.parameters, tol=1e-30, method='SLSQP', bounds=bounds,
                          options={'maxiter': 1e6}, callback=self.optimizer_callback)
         except RuntimeError:
             print('Exited optimizer')
             pass
-
-
-    @property
-    def results(self):
-        return self._results
