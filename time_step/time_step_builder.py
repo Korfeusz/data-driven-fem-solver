@@ -1,3 +1,4 @@
+from .dd_solver_time_step import DDSolverTimeStep
 from .time_step import TimeStep
 from .dddb_time_step import DDDbTimeStep
 from .elastodynamics_time_step import ElastodynamicsTimeStep
@@ -69,3 +70,8 @@ class TimeStepBuilder:
                                 dddb_output_file=self.dddb_output_file_name,
                                 initial_material_parameters=self.initial_material_parameters
                                 )
+        if self.time_step_type == DDSolverTimeStep:
+            return DDSolverTimeStep(alpha_params=self.alpha_params, time_params=self.time_params,
+                                          fem_solver=self.fem_solver,
+                                          boundary_excitation=self.boundary_excitation, field_updates=self.field_updates,
+                                          fields=self.fields)
