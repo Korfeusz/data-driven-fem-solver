@@ -12,13 +12,13 @@ from file_handling import XDMFCheckpointHandler
 
 class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
-        self.parameters = (initial_values * 10) - 5.
+        self.parameters = (initial_values * 20.) + 990.
         self.fields = fields
         self.fem_solver = fem_solver
         self.spaces = spaces
         self._results = None
         self.it = 0
-        self.exit_value = 1e-4
+        self.exit_value = 1e-6
         self.norm = None
         self.keep_going = True
         self.stop_thread = threading.Thread(target=self.key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
@@ -29,7 +29,7 @@ class ScipyOptimizer(Optimizer):
         self.keep_going = False
 
     def optimizer_callback(self, xk):
-        if self.it % 100 == 0:
+        if self.it % 1 == 0:
             print('iteration: {}, norm: {}'.format(self.it, self.norm))
             if self.save_file is not None:
                 self.save_file.write(self.it)
@@ -40,6 +40,7 @@ class ScipyOptimizer(Optimizer):
         elif not self.keep_going:
             print('User exit')
             raise RuntimeError
+        # If it does not change enough between steps shake it up a little
 
     def compare_displacement(self, fields):
         diff = fenics.project(fields.u_new - fields.imported_displacement_field, V=self.spaces.vector_space)
@@ -60,10 +61,13 @@ class ScipyOptimizer(Optimizer):
 
     def run(self):
         self.it = 0
-        bounds = None
+        bounds = tuple((990., 1100.) for _ in range(self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim()))
+
         try:
             spo.minimize(self.function_to_minimize, self.parameters, tol=0.0, method='SLSQP', bounds=bounds,
                          options={'maxiter': 1e6, 'ftol': 0.0}, callback=self.optimizer_callback)
+            # spo.minimize(self.function_to_minimize, self.parameters, tol=0.0, method='Powell',
+            #              options={'maxiter': 1e6, 'xtol': 0.0, 'ftol': 0.0, 'disp': True}, callback=self.optimizer_callback)
         except RuntimeError:
             print('Exited optimizer')
             pass
