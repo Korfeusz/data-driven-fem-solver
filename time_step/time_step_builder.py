@@ -18,12 +18,12 @@ class TimeStepBuilder:
         self.in_checkpoint_file_name = None
         self.out_checkpoint_file_name = None
         self.spaces = None
-        self.dddb_output_file_name = None
+        self.dddb_file_name = None
         self.initial_material_parameters = None
 
     def set(self, alpha_params=None, time_params=None, fem_solver=None,
             boundary_excitation=None, field_updates=None, fields=None,
-            mesh=None, checkpoint_file_name=None, spaces=None, dddb_output_file=None,
+            mesh=None, checkpoint_file_name=None, spaces=None, dddb_file_name=None,
             initial_material_parameters=None, in_checkpoint_file_name=None, out_checkpoint_file_name=None):
         if alpha_params is not None:
             self.alpha_params = alpha_params
@@ -43,8 +43,8 @@ class TimeStepBuilder:
             self.checkpoint_file_name = checkpoint_file_name
         if spaces is not None:
             self.spaces = spaces
-        if dddb_output_file is not None:
-            self.dddb_output_file_name = dddb_output_file
+        if dddb_file_name is not None:
+            self.dddb_file_name = dddb_file_name
         if initial_material_parameters is not None:
             self.initial_material_parameters = initial_material_parameters
         if in_checkpoint_file_name is not None:
@@ -67,11 +67,12 @@ class TimeStepBuilder:
                                 in_checkpoint_file_name=self.in_checkpoint_file_name,
                                 out_checkpoint_file_name=self.out_checkpoint_file_name,
                                 mesh=self.mesh, spaces=self.spaces,
-                                dddb_output_file=self.dddb_output_file_name,
+                                dddb_file_name=self.dddb_file_name,
                                 initial_material_parameters=self.initial_material_parameters
                                 )
         if self.time_step_type == DDSolverTimeStep:
             return DDSolverTimeStep(alpha_params=self.alpha_params, time_params=self.time_params,
                                           fem_solver=self.fem_solver,
                                           boundary_excitation=self.boundary_excitation, field_updates=self.field_updates,
-                                          fields=self.fields)
+                                          fields=self.fields, out_checkpoint_file_name=self.out_checkpoint_file_name,
+                                    dddb_file_name=self.dddb_file_name)

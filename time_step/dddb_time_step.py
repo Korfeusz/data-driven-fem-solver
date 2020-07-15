@@ -22,7 +22,7 @@ class DDDbTimeStep(TimeStep):
                  fields: DDDbFields,
                  mesh: fenics.Mesh,
                  spaces: Spaces,
-                 dddb_output_file: str,
+                 dddb_file_name: str,
                  initial_material_parameters: np.ndarray,
                  in_checkpoint_file_name: str,
                  out_checkpoint_file_name: str):
@@ -39,7 +39,7 @@ class DDDbTimeStep(TimeStep):
         self.a_out_checkpoint_file = XDMFCheckpointHandler(file_name='a_{}'.format(out_checkpoint_file_name), append_to_existing=False,
                                                         field=fields.a_old,
                                                         field_name=fields.a_old.name())
-        self.np_files = NPYFile(file_name=dddb_output_file)
+        self.np_files = NPYFile(file_name=dddb_file_name)
         self.tensor_space = spaces.tensor_space
         self.number_of_vertices = mesh.num_vertices()
         self.fields = fields

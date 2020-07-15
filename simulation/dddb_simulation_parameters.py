@@ -62,6 +62,6 @@ class DDDbParameters(SimulationParameters):
         tsb = TimeStepBuilder(time_step_type=DDDbTimeStep)
         tsb.set(in_checkpoint_file_name='checkpoint_file.xdmf',
                 out_checkpoint_file_name='dddb_out_file.xdmf',
-                dddb_output_file='dddb_out',
+                dddb_file_name='dddb_out',
                 )
         return tsb
