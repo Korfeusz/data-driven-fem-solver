@@ -3,3 +3,4 @@ from .simulation import Simulation
 from .elastodynamic_simulation_parameters import ElastodynamicSimulationParameters
 from .common_simulation_parameters import CommonSimulationParameters
 from .dddb_simulation_parameters import DDDbParameters
+from .dd_solver_simulation_parameters import DDSolverSimulationParameters

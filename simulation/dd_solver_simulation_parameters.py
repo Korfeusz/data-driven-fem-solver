@@ -42,7 +42,7 @@ class DDSolverSimulationParameters(SimulationParameters):
     @property
     def time_step_builder(self) -> TimeStepBuilder:
         tsb = TimeStepBuilder(time_step_type=DDSolverTimeStep)
-        tsb.set()
+        tsb.set(out_checkpoint_file_name='dd_solver.xdmf', dddb_file_name='dddb_out')
         return tsb
 
     @property

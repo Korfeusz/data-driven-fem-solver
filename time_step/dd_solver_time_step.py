@@ -23,13 +23,12 @@ class DDSolverTimeStep(TimeStep):
         super().__init__(alpha_params, time_params, fem_solver, boundary_excitation, field_updates, fields)
         self.fields = fields
         self.out_checkpoint_file = XDMFCheckpointHandler(file_name=out_checkpoint_file_name, append_to_existing=False,
-                                                         field=fields.u_new,
-                                                         field_name=fields.u_new.name())
-        self.dddb_loader = DDDbLoader(database_file_name=dddb_file_name, strains_file_prefix='strains', params_file_prefix='params',
+                                                         field=self.fields.u_new,
+                                                         field_name=self.fields.u_new.name())
+        self.dddb_loader = DDDbLoader(database_file_name=dddb_file_name, strains_file_prefix='strain', params_file_prefix='params',
                                       iteration_number=10, path_to_files=None)
         self.params_db = self.dddb_loader.parameters_array
         self.strains_db = self.dddb_loader.strains_array
-
 
     def random_parameter_indices(self) -> np.ndarray:
         return np.random.choice(range(len(self.params_db)), int(self.fields.function_space.dim()))
@@ -60,9 +59,10 @@ class DDSolverTimeStep(TimeStep):
         parameters = self.params_db[old_indices]
         strains = self.strains_db[old_indices]
         self.fields.new_constitutive_relation_multiplicative_parameters = parameters
-        i = 0
+        it = 0
+        self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
         while True:
-            i += 1
+            it += 1
             self.fem_solver.run(fields=self.fields)
 
             strain_tens = self.create_strain_tensor(self.fields.u_new)
@@ -71,11 +71,17 @@ class DDSolverTimeStep(TimeStep):
 
             # new_strains = np.reshape(self.strains_db[new_indices], newshape=(self.fields.tensor_space.dim()))
             # strain_tensor.vector()[:] = new_strains
-            self.out_checkpoint_file.write(i)
-            if all(new_indices == old_indices):
+            if sum(new_indices == old_indices)/len(new_indices) > 0.9:
+                print('exit')
                 break
+            if it % 100 == 0:
+                print(sum(new_indices == old_indices)/len(new_indices))
+                print(all(new_indices == old_indices))
             old_indices = new_indices
 
+        self.out_checkpoint_file.write(i)
+        self.field_updates.run(fields=self.fields)
+
     def close(self):
-        pass
+        self.out_checkpoint_file.close()
 
