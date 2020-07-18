@@ -56,21 +56,17 @@ class DDSolverTimeStep(TimeStep):
 
     def run(self, i):
         old_indices = self.random_parameter_indices()
-        parameters = self.params_db[old_indices]
-        strains = self.strains_db[old_indices]
-        self.fields.new_constitutive_relation_multiplicative_parameters = parameters
+        self.fields.new_constitutive_relation_multiplicative_parameters = self.params_db[old_indices]
         it = 0
         self.boundary_excitation.update(self.alpha_params, self.time_params.delta_t_float, i)
         while True:
             it += 1
             self.fem_solver.run(fields=self.fields)
-
+            
             strain_tens = self.create_strain_tensor(self.fields.u_new)
             new_indices = self.get_new_young_moduli_indices(strain_tens, self.strains_db, self.norm_sqrd)
             self.fields.new_constitutive_relation_multiplicative_parameters = self.params_db[new_indices]
 
-            # new_strains = np.reshape(self.strains_db[new_indices], newshape=(self.fields.tensor_space.dim()))
-            # strain_tensor.vector()[:] = new_strains
             if sum(new_indices == old_indices)/len(new_indices) > 0.9:
                 print('exit')
                 break
