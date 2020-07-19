@@ -10,14 +10,15 @@ class ParameterUpdates:
         self.params_db = params_db
         self.new_indices = None
         self.old_indices = old_indices
-        # params transformation to the correct shape
-        self.fields.new_constitutive_relation_multiplicative_parameters = self.params_db[old_indices]
+        self.fields.new_constitutive_relation_multiplicative_parameters = self.get_settable_params(old_indices)
 
+    def get_settable_params(self, indices):
+        return np.reshape(self.params_db[indices], newshape=(-1))
 
     def run(self, norm):
         computed_strains = self.create_strain_tensor(self.fields.u_new)
         self.new_indices = self.get_new_indices(computed_strains, norm)
-        self.fields.new_constitutive_relation_multiplicative_parameters = self.params_db[self.new_indices]
+        self.fields.new_constitutive_relation_multiplicative_parameters = self.get_settable_params(self.new_indices)
 
     def set_next_state(self):
         self.old_indices = self.new_indices
