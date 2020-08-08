@@ -16,7 +16,7 @@ from fields import DataDrivenParametersSpaceName
 class DDDbParameters(SimulationParameters):
     def __init__(self):
         self._fields = None
-        self.constitutive_relation_type: Type[ConstitutiveRelation]= LinearHookesLaw
+        self.constitutive_relation_type: Type[ConstitutiveRelation]= DDDbConstitutiveRelation
         self._constitutive_relation = None
         self.set_constitutive_relation_and_fields()
 
@@ -62,6 +62,6 @@ class DDDbParameters(SimulationParameters):
         tsb = TimeStepBuilder(time_step_type=DDDbTimeStep)
         tsb.set(in_checkpoint_file_name='checkpoint_file.xdmf',
                 out_checkpoint_file_name='dddb_out_file.xdmf',
-                dddb_file_name='dddb_out',
+                dddb_file_name='dddb_out_tensor',
                 )
         return tsb

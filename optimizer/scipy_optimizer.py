@@ -9,16 +9,21 @@ from fem_solver import FemSolver
 from space_definition import Spaces
 import threading
 from file_handling import XDMFCheckpointHandler
+from .symmetric_parameters_tool import make_parameters_symmetric
 
 class ScipyOptimizer(Optimizer):
     def __init__(self, fields: DDDbFields, initial_values: np.ndarray, fem_solver: FemSolver, spaces: Spaces):
-        self.parameters = (initial_values * 20.) + 990.
+        self.parameters = (initial_values * 10) + 765
         self.fields = fields
+        if self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim() == spaces.tensor_space.dim():
+            self.parameters_tensor_space = True
+        else:
+            self.parameters_tensor_space = False
         self.fem_solver = fem_solver
         self.spaces = spaces
         self._results = None
         self.it = 0
-        self.exit_value = 1e-6
+        self.exit_value = 5e-5
         self.norm = None
         self.keep_going = True
         self.stop_thread = threading.Thread(target=self.key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
@@ -29,7 +34,7 @@ class ScipyOptimizer(Optimizer):
         self.keep_going = False
 
     def optimizer_callback(self, xk):
-        if self.it % 1 == 0:
+        if self.it % 10 == 0:
             print('iteration: {}, norm: {}'.format(self.it, self.norm))
             if self.save_file is not None:
                 self.save_file.write(self.it)
@@ -53,6 +58,8 @@ class ScipyOptimizer(Optimizer):
         return norm
 
     def function_to_minimize(self, parameters):
+        if self.parameters_tensor_space:
+            parameters = make_parameters_symmetric(parameters)
         self.fields.new_constitutive_relation_multiplicative_parameters.vector()[:] = parameters
         self.fem_solver.run(self.fields)
         self.norm = self.compare_displacement(self.fields)
@@ -61,8 +68,8 @@ class ScipyOptimizer(Optimizer):
 
     def run(self):
         self.it = 0
-        bounds = tuple((990., 1100.) for _ in range(self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim()))
-
+        # bounds = tuple((700., None) for _ in range(self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim() - self.spaces.function_space.dim()))
+        bounds = None
         try:
             spo.minimize(self.function_to_minimize, self.parameters, tol=0.0, method='SLSQP', bounds=bounds,
                          options={'maxiter': 1e6, 'ftol': 0.0}, callback=self.optimizer_callback)

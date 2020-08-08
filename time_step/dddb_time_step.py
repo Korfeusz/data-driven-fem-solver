@@ -44,7 +44,7 @@ class DDDbTimeStep(TimeStep):
         self.number_of_vertices = mesh.num_vertices()
         self.fields = fields
         initial_values_for_optimizer = np.random.random(
-            self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim())
+            self.fields.new_constitutive_relation_multiplicative_parameters.function_space().dim() - self.fields.function_space.dim())
         self.optimizer = ScipyOptimizer(fields=self.fields, initial_values=initial_values_for_optimizer,
                                         fem_solver=fem_solver, spaces=spaces)
 

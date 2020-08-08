@@ -2,6 +2,7 @@ import fenics
 from fem_solver import get_fem_solver
 from .simulation_parameters import SimulationParameters
 from .common_simulation_parameters import CommonSimulationParameters
+import numpy as np
 
 class Simulation:
     def __init__(self, simulation_parameters: SimulationParameters,
@@ -35,11 +36,22 @@ class Simulation:
                               boundary_excitation=self.boundary_excitation,
                               field_updates=self.field_updates, fields=self.fields, mesh=mesh, spaces=self.spaces)
         time_step = self.time_step_builder.build()
-
+        mins = []
+        maxs = []
         for (i, t) in enumerate(self.time_params.linear_time_space[1:]):
         # for i in range(3):
             print("Time: ", t)
             time_step.run(i)
+            # v = fenics.elem_div(self.problem.constitutive_relation.get_new_value(self.fields.u_new), fenics.sym(fenics.grad(self.fields.u_new)))
+            # x = fenics.project(v, self.spaces.tensor_space).vector()[:]
+            # mins.append(min(x))
+            # maxs.append(max(x))
+            # # print('min: {}, max: {}, median, {}'.format(min(x), max(x), np.nanmedian(np.asarray(x))))
+            # print(x)
+            # print()
+            # print(fenics.project(self.problem.constitutive_relation.get_new_value(self.fields.u_new), self.spaces.tensor_space).vector()[:])
+            # print(fenics.project(fenics.sym(fenics.grad(self.fields.u_new)), self.spaces.tensor_space).vector()[:])
             if time_step.halt:
                 break
         time_step.close()
+        print('total: min: {}, max: {}'.format(min(mins), max(maxs)))

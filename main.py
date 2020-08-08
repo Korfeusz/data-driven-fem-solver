@@ -8,10 +8,10 @@ fenics.set_log_level(logging.WARNING)
 # simulation = Simulation(simulation_parameters=ElastodynamicSimulationParameters(),
 #                         common_simulation_parameters=CommonSimulationParameters())
 #
-# simulation = Simulation(simulation_parameters=DDDbParameters(),
-#                         common_simulation_parameters=CommonSimulationParameters())
-
-simulation = Simulation(simulation_parameters=DDSolverSimulationParameters(),
+simulation = Simulation(simulation_parameters=DDDbParameters(),
                         common_simulation_parameters=CommonSimulationParameters())
+
+# simulation = Simulation(simulation_parameters=DDSolverSimulationParameters(),
+#                         common_simulation_parameters=CommonSimulationParameters())
 
 simulation.run()
