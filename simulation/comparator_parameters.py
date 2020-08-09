@@ -44,6 +44,6 @@ class ComparatorParameters(SimulationParameters):
         tsb = TimeStepBuilder(time_step_type=ComparatorTimeStep)
         tsb.set(in_checkpoint_file_name='checkpoint_file.xdmf',
                 out_checkpoint_file_name='dddb_out_file.xdmf',
-                dddb_file_name='dddb_out_tensor',
+                in_file_iteration_number=None
                 )
         return tsb

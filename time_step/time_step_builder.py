@@ -21,11 +21,13 @@ class TimeStepBuilder:
         self.spaces = None
         self.dddb_file_name = None
         self.initial_material_parameters = None
+        self.in_file_iteration_number=None
 
     def set(self, alpha_params=None, time_params=None, fem_solver=None,
             boundary_excitation=None, field_updates=None, fields=None,
             mesh=None, checkpoint_file_name=None, spaces=None, dddb_file_name=None,
-            initial_material_parameters=None, in_checkpoint_file_name=None, out_checkpoint_file_name=None):
+            initial_material_parameters=None, in_checkpoint_file_name=None, out_checkpoint_file_name=None,
+            in_file_iteration_number=None):
         if alpha_params is not None:
             self.alpha_params = alpha_params
         if time_params is not None:
@@ -52,6 +54,8 @@ class TimeStepBuilder:
             self.in_checkpoint_file_name = in_checkpoint_file_name
         if out_checkpoint_file_name is not None:
             self.out_checkpoint_file_name = out_checkpoint_file_name
+        if in_file_iteration_number is not None:
+            self.in_file_iteration_number = in_file_iteration_number
 
 
 
@@ -81,4 +85,6 @@ class TimeStepBuilder:
             return ComparatorTimeStep(alpha_params=self.alpha_params, time_params=self.time_params,
                                           fem_solver=self.fem_solver,
                                           boundary_excitation=self.boundary_excitation, field_updates=self.field_updates,
-                                          fields=self.fields)
+                                          fields=self.fields, in_checkpoint_file_name=self.in_checkpoint_file_name,
+                                      out_checkpoint_file_name=self.out_checkpoint_file_name,
+                                      mesh=self.mesh, in_file_iteration_number=self.in_file_iteration_number)

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from file_handling import HDF5File, XDMFCheckpointHandler, NPYFile
 from optimizer import ScipyOptimizer
 from fields import DDDbFields
@@ -21,9 +23,14 @@ class ComparatorTimeStep(TimeStep):
                  field_updates: FieldUpdates,
                  fields: DDDbFields,
                  mesh: fenics.Mesh,
-                 spaces: Spaces,
-                 dddb_file_name: str,
-                 initial_material_parameters: np.ndarray,
+                 in_file_iteration_number: Optional[int],
                  in_checkpoint_file_name: str,
                  out_checkpoint_file_name: str):
         super().__init__(alpha_params, time_params, fem_solver, boundary_excitation, field_updates, fields)
+
+
+    def run(self, i):
+        pass
+
+    def close(self):
+        pass
